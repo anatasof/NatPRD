@@ -8,10 +8,12 @@ Built on the **Common PRD Standards** — 12 core sections, 4 optional sections,
 
 ## What It Does
 
+- **Runs an upfront intake** to gather product type, platform, team structure, compliance exposure, and discovery maturity before any section begins — so every subsequent question is targeted and context-aware
 - **Interviews** you section by section with focused, contextual questions
 - **Validates** every answer against the section rules before moving on
 - **Enforces** user story format for all requirements
 - **Generates** Gherkin acceptance criteria automatically
+- **Never fabricates content** — if you don't have an answer, it writes `[TBD]` instead of inventing metrics, names, dates, or evidence
 - **Scores** the completed PRD out of 100 with a detailed validation report
 - **Outputs** a production-ready `docs/prd.md` file
 
@@ -141,7 +143,7 @@ prd-maker/
 
 | Mode | Trigger | What Happens |
 |---|---|---|
-| **Generate** | "I want a PRD for..." | Guided interview → section by section → full PRD output |
+| **Generate** | "I want a PRD for..." | Upfront intake → guided section interview → optional sections → full PRD output |
 | **Review** | "Review my PRD" | Reads existing file → validates → scores → report |
 | **Update** | "Update [section]" | Targets one section → re-interviews → rewrites → re-validates |
 
@@ -159,6 +161,9 @@ prd-maker/
 
 **Q: Does this work outside Claude Code?**
 A: Yes, with a manual step. Paste the contents of `SKILL.md` into a Project's instructions on Claude.ai (web or mobile), or into the **Customize** feature. The PRD workflow works the same way — the only difference is Claude cannot save files for you, so you copy the output yourself.
+
+**Q: Why does it ask so many questions upfront before the PRD sections start?**
+A: The intake phase gathers context about your product type, platform, team structure, compliance exposure, and discovery maturity. Without it, Claude would have to guess — and guessing leads to invented metrics, fabricated design links, and hallucinated evidence. The intake makes every subsequent question more specific and the output more accurate.
 
 **Q: Can I customise the template?**
 A: Yes. Edit `templates/prd-template.md` and `prompts/section-rules.md` to match your team's standards.

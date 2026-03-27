@@ -119,6 +119,45 @@ Use the `vX.Y` format. Read the existing `Version` field from `docs/prd.md` befo
 
 ---
 
+## Anti-Hallucination Rules
+
+These rules apply at ALL times during Mode 1, Mode 2, and Mode 3. They are not optional.
+
+### When the user does not have information
+
+If the user says they don't know a number, date, name, or detail — or if no answer is provided — write `[TBD — owner: ]` with a blank owner field. Do NOT invent a plausible-sounding value.
+
+This applies without exception to:
+- Baselines and targets in §4 (Objectives / KRs) and §7 (Metrics)
+- Event names and metric mappings in §11 (Tracking)
+- Design artifact links in §9 (Solution)
+- Stakeholder names in §2, §10, §16
+- Evidence, sources, and citations in §3 (Background)
+- Dates, deadlines, and review schedules in §10 and §15
+- Risk owners, dependency confirmations, and compliance references
+- Dashboard or monitoring tool names and links in §10
+
+### Specific prohibitions
+
+- NEVER write a metric baseline or target that the user did not provide. Write `[TBD]` instead.
+- NEVER fabricate a design link, Figma URL, Confluence link, or Jira ticket. Write `[No design link — status: Draft]` instead.
+- NEVER invent a person's name as a reviewer, DRI, or owner. Write `[TBD — owner: ]` instead.
+- NEVER write "approximately", "roughly", or "around X%" to soften an invented number. If the user didn't give the number, write `[TBD]`.
+- NEVER generate evidence, research citations, or data to support the background if the user has not provided it. Write unvalidated assertions as: `[Team belief — unvalidated: ___]`.
+- NEVER fabricate an event name, tracking property, or data destination. If the user has not confirmed a tracking plan, mark every event row: `[TBD — event name to be confirmed by data team]`.
+- NEVER pre-populate the data team sign-off checkbox as complete unless the user explicitly confirms it.
+- NEVER describe a UI or design in prose if no design link exists. Use: `[Design pending — link to be added]`.
+
+### When the user is vague
+
+Push back with a clarifying probe before writing the section. Use the probes defined in `prompts/interview-questions.md`. Do not write the section until you have enough real information to avoid fabricating core content.
+
+### [TBD] handling in validation
+
+`[TBD]` fields are treated as missing for scoring purposes. Each `[TBD]` is scored as if the field is absent — applying the same deductions as the rubric in `prompts/validation-rules.md`. `[TBD]` fields are reported as warnings in the validation report, not violations, but they do reduce the score accordingly.
+
+---
+
 ## Workflow
 
 ### Mode 1: Generate (default)
@@ -126,8 +165,10 @@ Used when user wants to create a new PRD from scratch.
 
 ```
 Step 1 — Intake
-  Ask for initiative name and one-line summary.
-  Determine which optional sections are needed.
+  Run the full §0 Intake from prompts/interview-questions.md.
+  Do NOT begin the section-by-section interview until all §0 questions are complete.
+  Use §0 answers to determine which optional sections to include BEFORE proceeding to Step 2.
+  Optional section decisions are final after intake — do not re-ask screening questions later.
 
 Step 2 — Guided Interview
   Work through each section in order.
@@ -140,9 +181,12 @@ Step 3 — Requirements Deep Dive
   For each story: role → action → benefit → scenarios.
   Ask "Any more stories?" after each one until the user signals done.
 
-Step 4 — Optional Sections Check
-  Based on intake answers, recommend which optional sections to include.
-  Generate each one if confirmed.
+Step 4 — Optional Sections
+  Optional sections were determined at intake. Present the confirmed list to the user:
+  "Based on what you told me, I'll include: [list]. Does that sound right?"
+  Generate each confirmed section in order: §13, §14, §15, §16.
+  Do not re-run optional section screening — the decision was made at intake.
+  If the user wants to add or remove a section, adjust accordingly.
 
 Step 5 — Output
   Apply Version and Date Auto-Update Rules: set Version to v0.1, set Last Updated to today's date.

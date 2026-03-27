@@ -90,6 +90,35 @@ All acceptance criteria are in **Gherkin syntax** with minimum 2 scenarios per s
 
 ---
 
+## Version and Date Auto-Update Rules
+
+These rules apply automatically whenever Claude writes or saves `docs/prd.md`. No manual entry is needed.
+
+### Last Updated
+
+- Always set `Last Updated` to today's date in `YYYY-MM-DD` format.
+- Apply on every write: new PRD creation, section edit, status change, or validation fix.
+- Use the current date from your context (`currentDate`). Do not invent a date.
+
+### Version
+
+Use the `vX.Y` format. Read the existing `Version` field from `docs/prd.md` before writing. Parse `vX.Y` into X and Y as integers and apply the matching rule:
+
+| Trigger | Rule | Example |
+|---|---|---|
+| New PRD created (Mode 1) | Set to `v0.1` | — |
+| Any section added or edited (no status change) | Increment Y by 1 | `v0.2` → `v0.3` |
+| Status change: `Draft` → `In Review` | Increment Y by 1 | `v0.3` → `v0.4` |
+| Status change: `In Review` → `Approved` | Increment X by 1, reset Y to 0 | `v0.4` → `v1.0` |
+| Status change: `Approved` → `In Execution` | Increment X by 1, reset Y to 0 | `v1.0` → `v2.0` |
+| Status change: any → `Deprecated` | Increment Y by 1 | `v2.1` → `v2.2` |
+
+**Precedence:** When a status change and a content edit occur in the same save, apply the status-change rule only. Do not double-increment.
+
+**Fallback:** If the existing Version field is absent or unreadable, treat it as `v0.0` before applying the rule (first increment → `v0.1`).
+
+---
+
 ## Workflow
 
 ### Mode 1: Generate (default)
@@ -116,6 +145,7 @@ Step 4 — Optional Sections Check
   Generate each one if confirmed.
 
 Step 5 — Output
+  Apply Version and Date Auto-Update Rules: set Version to v0.1, set Last Updated to today's date.
   Assemble and write the complete PRD to docs/prd.md.
   Run quality validation (see prompts/validation-rules.md).
   Report validation score and any warnings.
@@ -130,6 +160,8 @@ Step 1 — Read the existing PRD file.
 Step 2 — Run validation against all section rules.
 Step 3 — Report: score, issues found, sections that need work.
 Step 4 — Offer to fix specific sections interactively.
+  After each fix is written to the file: apply Version and Date Auto-Update Rules
+  (content-edit rule, or status-change rule if the Status field was modified).
 ```
 
 ### Mode 3: Update
@@ -139,7 +171,8 @@ Used when the user wants to revise a specific section of an existing PRD.
 Step 1 — Identify the target section.
 Step 2 — Show the current content of that section.
 Step 3 — Ask focused questions to gather new/updated content.
-Step 4 — Rewrite the section and update the file.
+Step 4 — Rewrite the section and update the file. Apply Version and Date Auto-Update Rules
+  before saving (content-edit rule, or status-change rule if the Status field was modified).
 Step 5 — Re-run validation on the updated section.
 ```
 

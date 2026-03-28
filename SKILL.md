@@ -125,7 +125,7 @@ These rules apply at ALL times during Mode 1, Mode 2, and Mode 3. They are not o
 
 ### When the user does not have information
 
-If the user says they don't know a number, date, name, or detail — or if no answer is provided — write `[TBD — owner: ]` with a blank owner field. Do NOT invent a plausible-sounding value.
+If the user says they don't know a detail — or if no answer is provided — use the most specific `[TBD]` variant defined in the rules below. If no specific variant applies, write `[TBD]`. Do NOT invent a plausible-sounding value.
 
 This applies without exception to:
 - Baselines and targets in §4 (Objectives / KRs) and §7 (Metrics)
@@ -177,7 +177,7 @@ Step 2 — Guided Interview
   Show the completed section output before moving to the next.
 
 Step 3 — Requirements Deep Dive
-  For Section 8, collect all user stories one at a time.
+  For §8, collect all user stories one at a time.
   For each story: role → action → benefit → scenarios.
   Ask "Any more stories?" after each one until the user signals done.
 
@@ -240,7 +240,6 @@ Step 5 — Re-run validation on the updated section.
 | `prompts/interview-questions.md` | Questions to ask per section during generation |
 | `prompts/section-rules.md` | Full rules for every section — used for validation |
 | `prompts/validation-rules.md` | Scoring rubric and validation logic |
-| `examples/prd-example.md` | A filled example PRD for reference |
 
 ---
 

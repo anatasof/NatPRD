@@ -461,4 +461,4 @@ Scenario: [Edge case or failure]
 
 ---
 
-*— PRD Template — prd-maker skill —*
+*— PRD Template — PRD Maker skill —*

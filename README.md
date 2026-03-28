@@ -1,4 +1,4 @@
-# prd-maker
+# PRD Maker
 
 > An interactive Claude Code skill that guides you through writing production-grade PRDs. Section by section, with built-in validation, user story, and Gherkin acceptance criteria.
 
@@ -93,7 +93,7 @@ Start Claude Code in any project directory, then use natural language:
 5. Scope & Boundaries
 6. Hypothesis
 7. Success Metrics
-8. Requirements ← user stories + Gherkin AC
+8. Requirements ← user stories + Gherkin AC + NFRs
 9. Solution
 10. Metric Monitoring
 11. Event & Data Tracking
@@ -123,7 +123,7 @@ After generation, the PRD is scored out of 100:
 ## File Structure
 
 ```
-prd-maker/
+NatPRD/
 ├── SKILL.md                          ← Skill entry point (Claude Code reads this)
 ├── README.md                         ← This file
 ├── templates/
@@ -133,8 +133,6 @@ prd-maker/
 │   ├── interview-questions.md        ← Questions asked per section during generation
 │   ├── section-rules.md              ← Full rules per section (used in validation)
 │   └── validation-rules.md           ← Scoring rubric and report format
-└── examples/
-    └── prd-example.md                ← Filled example PRD for reference
 ```
 
 ---

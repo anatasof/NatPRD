@@ -36,6 +36,7 @@ A violation blocks progression to the next section. Warnings are noted but do no
 - Section opens with a proposed solution rather than a problem or pain
 - No evidence or data source cited for any claim
 - Cost of inaction is absent
+- Compliance signals were confirmed in §0.3 but no Regulatory Context subsection is present (even a TBD entry is required)
 
 **WARNINGS:**
 - Section is shorter than 3 paragraphs (may be underdeveloped)
@@ -64,6 +65,7 @@ A violation blocks progression to the next section. Warnings are noted but do no
 - Out of Scope section is absent (even if intentionally empty, it must be stated as empty and explained)
 - An Out of Scope item has no reason attached
 - Platform or user segment coverage is not stated
+- Compliance signals were confirmed in §0.3 but no regulatory-driven scope items are present or explicitly noted as not applicable
 
 **WARNINGS:**
 - In Scope list contains only one item (may be underdeveloped or scope is too narrow)
@@ -176,9 +178,13 @@ A violation blocks progression to the next section. Warnings are noted but do no
 - A risk has a mitigation but no contingency
 - A risk has no named owner (individual, not team)
 - Initiative touches eKYC, AML, or financial transactions but no regulatory risk row is present
+- A regulatory risk row is present but does not name the specific regulation it relates to (e.g., writing "regulatory risk" without citing GDPR, PCI-DSS, OJK POJK 12/2018, etc.)
+- A regulatory risk row has a TBD owner with no deadline for owner assignment
 
 **WARNINGS:**
 - Pre-launch and post-launch risks are not distinguished
+- Legal or compliance team has not been flagged to review this section before In Review
+- Confirmed regulations from §0.3b are not all represented — each confirmed regulation should have at least one corresponding risk row (even if TBD)
 
 ---
 

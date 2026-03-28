@@ -64,11 +64,23 @@
 ### Cost of Inaction
 [What is lost if this is not pursued — revenue, users, compliance, competitive position?]
 
+### Regulatory Context
+*(Include this subsection when compliance signals were confirmed at intake. Remove this subsection if no compliance signals apply — note its removal explicitly: "No regulatory requirements identified.")*
+
+| Regulation | Jurisdiction | Key Requirements for This Initiative | Status |
+|---|---|---|---|
+| [Regulation name, e.g., GDPR Art. 6] | [EU/EEA] | [Specific obligation — e.g., lawful basis for data processing required] | `Confirmed` / `[TBD — compliance review required]` |
+| [Regulation name] | [Region] | [Specific obligation] | `Confirmed` / `[TBD — compliance review required]` |
+
+**Compliance Review Owner:** [Name — individual, not team]
+**Review Deadline:** [Date or `[TBD]`]
+
 ### Rules
 - Lead with pain, not solution.
 - Every claim needs a cited source.
 - 3–5 paragraphs. Link to longer docs rather than embedding.
 - Cost of inaction is mandatory.
+- Regulatory Context is mandatory when any compliance signal was confirmed at intake. Write `[TBD — compliance review required: [regulation name]]` if specifics are unknown — do not omit the subsection entirely.
 
 ---
 
@@ -356,16 +368,30 @@ Scenario: [Edge case or failure]
 ## 13. Risks & Mitigations
 *(Include when: payments, compliance, regulated data, or multi-team dependencies)*
 
+### Regulatory Risks
+*(Mandatory when compliance signals were confirmed at intake. One row per confirmed regulation minimum.)*
+
+| ID | Regulation | Risk Description | Likelihood | Impact | Mitigation | Contingency | Owner | Phase |
+|---|---|---|---|---|---|---|---|---|
+| RR-001 | [Regulation name, e.g., GDPR] | [Specific risk — e.g., processing personal data without valid lawful basis] | `H/M/L` | `H/M/L` | [Prevention — e.g., legal review, consent flow implementation] | [Response if it materializes — e.g., cease processing, notify DPA] | [Name] | Pre-launch |
+
+**Legal/Compliance Sign-off on Regulatory Risks:**
+- [ ] Pending — [Name, Title to review]
+- [ ] Approved — [Name, Title], [Date]
+
+### Operational & Technical Risks
+
 | ID | Risk | Likelihood | Impact | Mitigation | Contingency | Owner | Phase |
 |---|---|---|---|---|---|---|---|
 | R-001 | [Risk] | `H/M/L` | `H/M/L` | [Prevention] | [Response if it happens] | [Name] | Pre-launch |
 
-> For eKYC / AML / fintech: regulatory risk row is mandatory.
-
 ### Rules
-- Both mitigation and contingency required per risk.
-- Named individual owner, not team.
+- Both mitigation and contingency required per risk row.
+- Named individual owner per row, not team.
 - Distinguish pre-launch vs. post-launch risks.
+- Every confirmed regulation from §3 Regulatory Context must have at least one row in Regulatory Risks.
+- Each regulatory risk row must name the specific regulation — not "regulatory risk" generically.
+- Legal/compliance sign-off checkbox is required in this section when regulatory risks are present.
 
 ---
 

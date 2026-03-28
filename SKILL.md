@@ -77,9 +77,9 @@ All acceptance criteria are in **Gherkin syntax** with minimum 2 scenarios per s
 ### Section Rules Summary (full rules in `prompts/section-rules.md`)
 - **§1 Name:** Max 8 words, noun phrase, matches Jira/roadmap
 - **§2 Status:** Fixed vocabulary only, no dev before Approved, named reviewers
-- **§3 Background:** Lead with pain not solution, cite evidence, state cost of inaction
+- **§3 Background:** Lead with pain not solution, cite evidence, state cost of inaction, Regulatory Context subsection required when compliance signals exist
 - **§4 Objective:** One outcome, numeric KRs with baseline+target, traceable to company OKR
-- **§5 Scope:** Explicit In + Out of scope, Out items must have reasons
+- **§5 Scope:** Explicit In + Out of scope, Out items must have reasons, regulatory-driven items flagged when compliance signals exist
 - **§6 Hypothesis:** Template required, must be falsifiable, include confidence level
 - **§7 Metrics:** Primary (leading+lagging) + guardrail, all need baseline/target/method/owner
 - **§8 Requirements:** User stories with specific role, Gherkin min 2 scenarios, MoSCoW
@@ -169,6 +169,12 @@ Step 1 — Intake
   Do NOT begin the section-by-section interview until all §0 questions are complete.
   Use §0 answers to determine which optional sections to include BEFORE proceeding to Step 2.
   Optional section decisions are final after intake — do not re-ask screening questions later.
+
+  MANDATORY: If any compliance signal is confirmed in §0.3 (payments, eKYC, PII, regulated data,
+  credit, etc.), run §0.3b Regulation Identification before proceeding. Identify the specific
+  applicable regulations and get user confirmation. The confirmed regulation list carries forward
+  into §3 (Regulatory Context), §5 (Scope), and §13 (Risks & Mitigations). This step cannot
+  be skipped — at minimum, produce a TBD list with a compliance team owner.
 
 Step 2 — Guided Interview
   Work through each section in order.

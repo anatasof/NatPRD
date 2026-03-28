@@ -52,6 +52,36 @@ Use the answers to configure which optional sections to include and how to tailo
 
 ---
 
+### §0.3b — Regulation Identification (Mandatory When Compliance Signals Exist)
+
+**Run this immediately after §0.3 if any compliance signal was confirmed. Do not skip or defer.**
+
+Based on the domain, geography, and signals confirmed in §0.3, identify the specific applicable regulations and present them to the user for confirmation.
+
+Use the following signal-to-regulation mapping as a starting point. This list is not exhaustive — add regulations that apply based on the user's geography and domain:
+
+| Signal | Common Regulations to Consider |
+|---|---|
+| Financial transactions / payments | PCI-DSS, local central bank regulations (e.g., OJK BI-SNAP for Indonesia, MAS for Singapore, RBI for India), PSD2 (EU) |
+| Identity verification / eKYC / KYB | FATF AML/CFT guidelines, local eKYC regulation (e.g., OJK POJK 12/2018 for Indonesia, MAS Notice 626 for Singapore), GDPR (EU) |
+| Credit / lending / BNPL | Local consumer credit regulation (e.g., OJK POJK 35/2018, CCPA for California) |
+| Insurance products | Local insurance authority regulations |
+| Personal data / PII beyond basic profile | GDPR (EU/EEA), CCPA/CPRA (California), PDPA (Thailand/Singapore), UU PDP (Indonesia), PIPL (China) |
+| Biometric data | BIPA (Illinois), GDPR Art. 9 (special category), local biometric laws |
+| Healthcare / medical data | HIPAA (US), local health data regulations |
+| Cross-border data transfer | GDPR Chapter V, SCCs, local data residency laws |
+| Children's data | COPPA (US), GDPR Art. 8 |
+
+Steps:
+1. Based on confirmed signals, state: "Based on what you've told me, the following regulations likely apply to this initiative: [list]. Does this look right? Are there any I'm missing or that don't apply?"
+2. Wait for the user to confirm, correct, or add regulations.
+3. Record the confirmed regulation list. This list is used in §3 (Regulatory Context), §5 (Scope), and §13 (Risks & Mitigations).
+4. If the user is unsure which regulations apply: "I'll flag the areas as `[TBD — legal/compliance team to confirm applicable regulations]` and add it as an open item in §12 FAQ."
+
+RULE: If a compliance signal was confirmed in §0.3, this step is mandatory. It cannot be skipped even if the user is uncertain — at minimum, flag it as TBD with an owner.
+
+---
+
 ### §0.4 — Team and Execution Context
 
 8. How many teams are involved in delivering this?
@@ -175,7 +205,11 @@ Any single signal is sufficient to trigger the section.
 
 4. What happens if we do nothing? What is the cost of inaction — revenue, users, compliance, competitive position?
 
-5. Is there prior art on this problem? Have other companies solved it, or has your company tried something similar?
+5. _(Run only if compliance signals were confirmed in §0.3b)_ Based on the regulations identified — [list from §0.3b] — what specific requirements do they impose on this initiative? For example: data residency, consent flows, audit logging, reporting obligations, user rights (access, deletion, portability), age verification. Are there any timelines or regulatory deadlines we need to capture?
+   - _If the user doesn't know the specifics:_ "I'll write `[TBD — compliance review required: [regulation name]]` and flag it as an open item for legal/compliance to resolve before Approved status."
+   - RULE: Do not invent regulatory requirements. If the user cannot describe them, write the TBD placeholder. Do not generalize or paraphrase regulation text as if it were confirmed.
+
+6. Is there prior art on this problem? Have other companies solved it, or has your company tried something similar?
 
 ---
 
@@ -198,6 +232,10 @@ Any single signal is sufficient to trigger the section.
 4. Which user segments does this apply to?
 5. Which geographies or regions are included?
 6. Is this phased? If so, what's in Phase 1 vs. later?
+
+7. _(Run only if compliance signals were confirmed in §0.3b)_ Based on [identified regulations], are any capabilities explicitly excluded from scope due to regulatory constraints? Are any capabilities in scope specifically because a regulation requires them?
+   - _Example prompts:_ "Does [regulation] require you to include a consent management flow? Does it prevent you from storing data in certain regions?"
+   - Record regulatory-driven In and Out of Scope items separately so reviewers can trace them to the compliance requirement.
 
 ---
 
@@ -372,3 +410,32 @@ For any open (unresolved) items:
 - "Who specifically owns resolving this? I need a person, not a team."
 - "What is the deadline for resolution?"
 - RULE: An open item with no individual owner is a warning. Push for a name before accepting the entry.
+
+---
+
+## §13 — Risks & Mitigations
+
+_(Run only when §13 was triggered at intake. Use the regulation list from §0.3b to seed the regulatory risk rows.)_
+
+**Start with regulatory risks — these are mandatory when compliance signals exist:**
+
+For each confirmed regulation from §0.3b, ask:
+
+1. What is the specific risk this regulation creates for this initiative?
+   - _If the user is unsure:_ "I'll write the risk as `[TBD — [regulation name] risk to be assessed by legal/compliance]` with the compliance team as the pending owner."
+2. What is the likelihood this risk materializes? (High / Medium / Low)
+3. What is the business impact if it does? (High / Medium / Low) — think fines, license suspension, user data breach, reputational damage.
+4. What is the mitigation plan — what are we doing before launch to prevent this risk?
+   - _Probe if vague:_ "Is there a compliance review scheduled? A legal sign-off checkpoint? An audit? A specific technical control?"
+5. What is the contingency plan — what do we do if the risk materializes despite mitigations?
+6. Who owns this risk? (Named individual — the person who wakes up at 2am if this fires)
+7. Is this a pre-launch risk (must be resolved before go-live) or post-launch risk (ongoing monitoring)?
+
+**Then cover operational and technical risks:**
+
+8. What are the top 3 operational risks for this initiative that aren't regulatory?
+   - _Prompts if stuck:_ "What could go wrong with the rollout? What if a third-party dependency is late? What if volume is 10x higher than expected?"
+9. For each: likelihood, impact, mitigation, contingency, owner, phase.
+
+**Closing check:**
+> "We've covered: [list of regulations identified]. Does legal or compliance need to formally review this section before the PRD moves to In Review? If so, I'll add that as an open item in §12."

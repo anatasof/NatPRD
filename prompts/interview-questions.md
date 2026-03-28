@@ -185,6 +185,9 @@ Any single signal is sufficient to trigger the section.
 2. Who is the author? Who is the current owner?
 3. Who needs to review this? Name at least one engineering lead and one business stakeholder.
    - _If only team names given:_ "Can you name the specific individuals, not just teams?"
+4. Who has authority to approve this PRD? Name the individual(s) — not a team.
+   - _If only a team name is given:_ "Can you name the specific person(s) with sign-off authority?"
+   - _If the PRD is still Draft:_ Leave as `[TBD — approver: ]` and flag as required before `Approved` status.
 
 ---
 

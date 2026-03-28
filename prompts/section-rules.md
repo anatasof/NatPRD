@@ -22,6 +22,7 @@ A violation blocks progression to the next section. Warnings are noted but do no
 **VIOLATIONS (block):**
 - Status is not one of: Draft / In Review / Approved / In Execution / Deprecated
 - Status is `In Review` but no named reviewers are listed (team names are not sufficient — individual names required)
+- Status is `Approved` or beyond but no named approver(s) are listed (individual names required — not team names)
 - Status is `Approved` or beyond but no approval date is recorded
 
 **WARNINGS:**

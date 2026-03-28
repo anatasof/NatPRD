@@ -87,7 +87,7 @@ Start Claude Code in any project directory, then use natural language:
 
 ### Core Sections (always required)
 1. Initiative Name
-2. Document Status
+2. Document Status ← status, version, author, owner, reviewers, approvers, approval date
 3. Background
 4. Objective
 5. Scope & Boundaries

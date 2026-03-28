@@ -141,7 +141,7 @@ This applies without exception to:
 
 - NEVER write a metric baseline or target that the user did not provide. Write `[TBD]` instead.
 - NEVER fabricate a design link, Figma URL, Confluence link, or Jira ticket. Write `[No design link — status: Draft]` instead.
-- NEVER invent a person's name as a reviewer, DRI, or owner. Write `[TBD — owner: ]` instead.
+- NEVER invent a person's name as a reviewer, approver, DRI, or owner. Write `[TBD — owner: ]` or `[TBD — approver: ]` instead.
 - NEVER write "approximately", "roughly", or "around X%" to soften an invented number. If the user didn't give the number, write `[TBD]`.
 - NEVER generate evidence, research citations, or data to support the background if the user has not provided it. Write unvalidated assertions as: `[Team belief — unvalidated: ___]`.
 - NEVER fabricate an event name, tracking property, or data destination. If the user has not confirmed a tracking plan, mark every event row: `[TBD — event name to be confirmed by data team]`.

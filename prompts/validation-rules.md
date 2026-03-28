@@ -10,7 +10,7 @@ Score the PRD out of 100. Report score, violations, and warnings separately.
 | Section | Max Points | How to Score |
 |---|---|---|
 | §1 Initiative Name | 3 | 3 = valid noun phrase ≤8 words. 1 = present but has issues. 0 = absent or invalid. |
-| §2 Document Status | 5 | 5 = valid status + named reviewers + version. Deduct 2 for unnamed reviewers. Deduct 1 per missing field. |
+| §2 Document Status | 5 | 5 = valid status + named reviewers + named approvers + version. Deduct 2 for unnamed reviewers. Deduct 2 if status is Approved or beyond and no named approver is listed. Deduct 1 per missing field. |
 | §3 Background | 10 | 10 = pain-led, evidence cited, cost of inaction present. Deduct 3 if solution-led. Deduct 3 if no evidence. Deduct 2 if no cost of inaction. |
 | §4 Objective | 10 | 10 = outcome statement + numeric KRs + company OKR link. Deduct 4 if objective is feature-based. Deduct 2 per KR missing baseline or target. Deduct 2 if no OKR link. |
 | §5 Scope & Boundaries | 8 | 8 = both In + Out scope present, Out has reasons, platform/segment stated. Deduct 3 if Out scope absent. Deduct 2 if Out items have no reasons. Deduct 2 if no platform/segment. |

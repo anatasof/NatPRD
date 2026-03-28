@@ -41,6 +41,7 @@
 | **Author** | [Name] |
 | **Owner** | [Name] |
 | **Reviewers** | [Engineering Lead], [Business Stakeholder] |
+| **Approvers** | [Name], [Name] |
 | **Approval Date** | — |
 
 ### Rules

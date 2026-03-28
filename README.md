@@ -9,6 +9,7 @@ Built on the **Common PRD Standards** — 12 core sections, 4 optional sections,
 ## What It Does
 
 - **Runs an upfront intake** to gather product type, platform, team structure, compliance exposure, and discovery maturity before any section begins — so every subsequent question is targeted and context-aware
+- **Identifies applicable regulations** when compliance signals are present (payments, eKYC, PII, regulated data) — maps them to GDPR, PCI-DSS, HIPAA, OJK, and others, confirms the list with you, and propagates them into Background, Scope, and Risks automatically
 - **Interviews** you section by section with focused, contextual questions
 - **Validates** every answer against the section rules before moving on
 - **Enforces** user story format for all requirements
@@ -100,7 +101,7 @@ Start Claude Code in any project directory, then use natural language:
 12. FAQ
 
 ### Optional Sections
-13. Risks & Mitigations — for compliance, payments, regulated data
+13. Risks & Mitigations — regulatory risk rows (one per confirmed regulation) + operational risks; legal sign-off checkpoint included
 14. Dependencies — for cross-team or third-party work
 15. Launch Plan — for coordinated rollouts
 16. Stakeholder Map — for cross-functional initiatives
@@ -144,6 +145,18 @@ NatPRD/
 | **Generate** | "I want a PRD for..." | Upfront intake → guided section interview → optional sections → full PRD output |
 | **Review** | "Review my PRD" | Reads existing file → validates → scores → report |
 | **Update** | "Update [section]" | Targets one section → re-interviews → rewrites → re-validates |
+
+---
+
+## Compliance-Aware Workflow
+
+When a compliance signal is confirmed at intake (payments, eKYC, KYB, PII, biometrics, healthcare, or cross-border data), the skill runs a dedicated regulation identification step before the main interview. It presents a signal-to-regulation mapping (GDPR, PCI-DSS, HIPAA, OJK, PDPA, and more), confirms the list with you, and carries the confirmed regulations forward automatically:
+
+- **Background** — adds a Regulatory Context table with jurisdiction, key obligations, and review status
+- **Scope** — flags regulatory-driven in/out-of-scope items separately so reviewers can trace them
+- **Risks & Mitigations** — adds one risk row per confirmed regulation with mitigation, contingency, named owner, and a legal/compliance sign-off checkbox
+
+If you don't know which regulations apply, the skill writes `[TBD — legal/compliance to confirm]` and flags it as an open item rather than inventing requirements.
 
 ---
 

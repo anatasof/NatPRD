@@ -40,6 +40,29 @@ Claude will detect the intent and load this skill automatically.
 
 ---
 
+## User-Choice Presentation
+
+Whenever an interview question offers a choice between **2–4 discrete, mutually-exclusive options**, present it using the `AskUserQuestion` tool so the user can click rather than type. This applies across all three modes.
+
+The tool caps at 4 listed options and automatically adds an "Other" escape, so you can cover up to 5 outcomes (4 explicit + Other) without listing them all.
+
+Examples that MUST use buttons:
+- §2 Document Status — list the 4 most common (Draft / In Review / Approved / In Execution); "Other" covers Deprecated
+- §6 Hypothesis confidence (High / Medium / Low)
+- §8 MoSCoW priority (Must-have / Should-have / Could-have / Won't-have)
+- §7 Metric type (Leading / Lagging / Guardrail)
+- Any yes/no compliance flag in §0.3
+- "Any more user stories?" (Yes — add another / No — move on)
+
+Exceptions — keep as plain text:
+- **Open-ended questions** (the working name in §0.1, evidence narrative in §3, hypothesis prose in §6, baseline/target values in §7): no discrete option set.
+- **Questions with >5 effective options** (e.g., §0.2 initiative type with 8 options): keep as text, or split into two sequential button questions.
+- **Multi-select** (e.g., §0.3 compliance signals — multiple may apply): use `AskUserQuestion` with `multiSelect: true`, up to 4 grouped categories.
+
+If a question doesn't naturally fit any of these patterns, default to text — never invent options to force a button UI.
+
+---
+
 ## Anti-Hallucination Rules
 
 These rules apply at ALL times during Mode 1, Mode 2, and Mode 3. They are not optional.

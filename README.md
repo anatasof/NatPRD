@@ -152,6 +152,16 @@ Outputs JSON with per-section scores, violations, and warnings. No dependencies 
 
 ---
 
+## Network Access
+
+The skill declares `WebFetch` in its `allowed-tools` so it can fetch public URLs the user explicitly references during the interview (research articles, regulatory body pages, vendor docs). Every fetched fact is shown to you for confirmation before it lands in the PRD, carries an inline `[source: …, retrieved: YYYY-MM-DD]` annotation, and is quoted directly — never paraphrased.
+
+The skill never goes searching for sources on its own (no `WebSearch`). Auth-walled tools (Confluence, Jira, internal wikis) cannot be fetched — you'll be asked to paste the relevant excerpt instead.
+
+If you don't want any outbound network calls, remove `WebFetch` from the `allowed-tools` line in `SKILL.md`. The skill will still work — it'll just ask you to paste excerpts for every URL.
+
+---
+
 ## Modes
 
 | Mode | Trigger | What Happens |

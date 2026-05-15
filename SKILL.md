@@ -1,7 +1,7 @@
 ---
 name: natprd
 description: Activate this skill when the user wants to create, update, validate, or review a Product Requirement Document. Triggers on mentions of PRD, product requirements, user stories, acceptance criteria, or initiative documentation, or when the user describes a feature and asks for structured documentation.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch
 ---
 
 # PRD Maker
@@ -99,6 +99,75 @@ Push back with a clarifying probe before writing the section. Use the probes def
 ### [TBD] handling in validation
 
 `[TBD]` fields are treated as missing for scoring purposes. Each `[TBD]` is scored as if the field is absent — applying the same deductions as the rubric in `prompts/validation-rules.md`. `[TBD]` fields are reported as warnings in the validation report, not violations, but they do reduce the score accordingly.
+
+---
+
+## Reference Research
+
+The skill enriches PRDs with verifiable facts from sources **the user explicitly references**. Three source classes, each with a defined fallback:
+
+| Source class | Examples | How to read it |
+|---|---|---|
+| Local file path | `docs/research-2026-q1.md`, prior PRD, exported CSV, post-mortem | `Read` tool directly |
+| Public URL | News article, regulatory body page, public research, vendor docs, public blog post | `WebFetch` tool |
+| Auth-walled URL | Confluence, Jira, internal wiki, private Notion, Figma | Ask user to paste the relevant excerpt — Claude Code cannot authenticate |
+
+The skill NEVER goes searching for sources on its own (no `WebSearch`). If the user did not name a source, it does not exist for PRD purposes — write `[TBD — needs source]` instead.
+
+### Fetch flow
+
+1. User mentions a path or URL during §0.6, §3, §4, §7, or any interview turn.
+2. Identify the source class from the table above.
+3. For **local paths**: `Read` the file directly.
+4. For **URLs**: try `WebFetch` first. If it fails (auth wall, 404, paywall, JS-only rendering, timeout), tell the user "I couldn't fetch that — could you paste the relevant section?" and proceed with the pasted excerpt.
+5. Whether fetched or pasted, the rest of the rules below apply identically.
+
+### Verify-before-write rule
+
+For every fact that will land in the PRD with a `[source: …]` annotation, show the user the exact text first:
+
+> "I'll write this in §3 Background: '18.3% of Premium subscribers lapsed in Q1 2026 without an explicit cancel action' [source: docs/research-2026-q1.md, retrieved: 2026-05-15]. OK to write this, or do you want to adjust the quote?"
+
+This is the user's check that the fetch / read actually returned what the model claims. One confirmation per quoted fact — for facts only, not for narrative paragraphs.
+
+### What to extract
+
+Verifiable facts only:
+- Numbers (metrics, baselines, dates, sample sizes) — quote exactly.
+- Direct quotes (1–2 sentences) attributable to a named source.
+- Named people (researcher, owner, approver) — cite role and source.
+- Regulations or standards named in the source — cite the exact reference.
+
+### How to attribute
+
+Every research-derived fact carries an inline annotation. Format:
+
+```
+[source: docs/research-2026-q1.md, retrieved: 2026-05-15]
+[source: https://www.bis.org/publ/bcbs239.pdf §12, retrieved: 2026-05-15]
+[source: user-pasted excerpt from Confluence PRD-AUTH-V1 §3.2, retrieved: 2026-05-15]
+```
+
+Use today's date from `currentDate`. Do not invent a date. Do not invent a section anchor — only cite `§N` if the source actually has that heading.
+
+### What NOT to do
+
+- NEVER paraphrase a source — quote the number or sentence directly.
+- NEVER synthesize across sources without showing the user the synthesis and getting explicit confirmation. "Both reports suggest X" is a synthesis; cite each report separately.
+- NEVER extrapolate a number ("12% in 2024, so by 2026 it's ~25%"). Write the measured value with its date; mark the rest `[TBD]`.
+- NEVER fabricate the contents of a `WebFetch` result. If the fetch failed or returned empty, say so and ask the user to paste — do not invent text the page "would have" contained.
+- NEVER follow links inside a fetched page to fetch more pages. One fetch per user-provided URL.
+- NEVER use `WebSearch` to look up facts the user did not source. The skill has no `WebSearch` capability for this reason.
+
+### When research returns nothing relevant
+
+If the source contains nothing useful for the current section, that is the result. Keep the `[TBD]`. Do not pad the section to make the source feel useful.
+
+### Interaction with anti-hallucination rules
+
+- If a source contradicts the user's interview answer, flag the contradiction — do not silently choose.
+- If a source names a regulation not on the confirmed §0.3b list, ask the user before adding it to §3 Regulatory Context.
+- Research enriches what the user provided; it does not override user-confirmed answers.
 
 ---
 

@@ -26,20 +26,22 @@ Built on the **Common PRD Standards** — 12 core sections, 4 optional sections,
 
 **Terminal (developers):**
 ```bash
-git clone https://github.com/anatasof/NatPRD.git ~/.claude/skills/NatPRD
+git clone https://github.com/anatasof/NatPRD.git ~/.claude/skills/natprd
 ```
 Restart Claude Code — the skill loads automatically.
 
 **No terminal (everyone else):**
 1. Go to [github.com/anatasof/NatPRD](https://github.com/anatasof/NatPRD)
 2. Click the green **Code** button → **Download ZIP**
-3. Unzip it and rename the folder to `NatPRD`
+3. Unzip it and rename the folder to `natprd` (lowercase)
 4. Move it into your Claude skills folder:
    - **Mac:** Open Finder → press `⌘ Shift G` → paste `~/.claude/skills` → drop the folder in
    - **Windows:** Navigate to `C:\Users\[your name]\.claude\skills\`
 5. Restart Claude Code
 
 The skill loads automatically. Just say what you need and Claude handles the rest.
+
+> **Migrating from an earlier version?** If you previously installed at `~/.claude/skills/NatPRD/`, rename it to `~/.claude/skills/natprd/` (or `mv ~/.claude/skills/NatPRD ~/.claude/skills/natprd`). The frontmatter name was lowercased to match Claude Code's skill conventions.
 
 ### Claude app (web, desktop, and mobile)
 
@@ -124,7 +126,7 @@ After generation, the PRD is scored out of 100:
 ## File Structure
 
 ```
-NatPRD/
+natprd/
 ├── SKILL.md                          ← Skill entry point (Claude Code reads this)
 ├── README.md                         ← This file
 ├── templates/
@@ -134,7 +136,19 @@ NatPRD/
 │   ├── interview-questions.md        ← Questions asked per section during generation
 │   ├── section-rules.md              ← Full rules per section (used in validation)
 │   └── validation-rules.md           ← Scoring rubric and report format
+└── scripts/
+    └── validate.py                   ← Deterministic baseline validator (Python 3, stdlib only)
 ```
+
+### Validation script
+
+You can also run the deterministic baseline validator directly:
+
+```bash
+python3 scripts/validate.py docs/prd.md
+```
+
+Outputs JSON with per-section scores, violations, and warnings. No dependencies — stdlib only.
 
 ---
 

@@ -56,29 +56,44 @@ Use the answers to configure which optional sections to include and how to tailo
 
 **Run this immediately after §0.3 if any compliance signal was confirmed. Do not skip or defer.**
 
-Based on the domain, geography, and signals confirmed in §0.3, identify the specific applicable regulations and present them to the user for confirmation.
+Identify the applicable regulations from the bundled registry, confirm them with the user, and — optionally — pull the exact obligation text from each regulation's official source.
 
-Use the following signal-to-regulation mapping as a starting point. This list is not exhaustive — add regulations that apply based on the user's geography and domain:
+**Step 1 — Look up candidates from the registry.**
+Map the confirmed §0.3 signals to the registry vocabulary (`payments`, `ekyc`, `pii`, `credit`, `insurance`, `biometric`, `healthcare`, `cross_border`, `children`) and note the user's geography as a country code (e.g. `ID`, `SG`, `EU`, `US`, `US-CA`). Then run:
+
+```
+python3 scripts/lookup_regulation.py --signals <comma-list> --geo <code>
+```
+
+It returns candidate regulations with jurisdiction and official source URL, plus the registry's `last_reviewed` date. `references/regulations.json` is the source of truth.
+
+_If the script cannot run_ (e.g., the Claude app has no filesystem), fall back to the mirror table below. This list is not exhaustive — add regulations that apply based on the user's geography and domain.
 
 | Signal | Common Regulations to Consider |
 |---|---|
-| Financial transactions / payments | PCI-DSS, local central bank regulations (e.g., OJK BI-SNAP for Indonesia, MAS for Singapore, RBI for India), PSD2 (EU) |
-| Identity verification / eKYC / KYB | FATF AML/CFT guidelines, local eKYC regulation (e.g., OJK POJK 12/2018 for Indonesia, MAS Notice 626 for Singapore), GDPR (EU) |
-| Credit / lending / BNPL | Local consumer credit regulation (e.g., OJK POJK 35/2018, CCPA for California) |
-| Insurance products | Local insurance authority regulations |
-| Personal data / PII beyond basic profile | GDPR (EU/EEA), CCPA/CPRA (California), PDPA (Thailand/Singapore), UU PDP (Indonesia), PIPL (China) |
-| Biometric data | BIPA (Illinois), GDPR Art. 9 (special category), local biometric laws |
-| Healthcare / medical data | HIPAA (US), local health data regulations |
-| Cross-border data transfer | GDPR Chapter V, SCCs, local data residency laws |
-| Children's data | COPPA (US), GDPR Art. 8 |
+| `payments` — financial transactions | PCI-DSS, local central bank regs (Bank Indonesia SNAP, MAS, RBI), PSD2 (EU) |
+| `ekyc` — identity / eKYC / KYB | FATF AML/CFT, local eKYC reg (OJK POJK 12/2018, MAS Notice 626), GDPR (EU) |
+| `credit` — credit / lending / BNPL | Local consumer-credit reg (OJK POJK 35/2018), CCPA/CPRA (California) |
+| `insurance` — insurance products | Local insurance authority regulations |
+| `pii` — personal data beyond basic profile | GDPR (EU/EEA), CCPA/CPRA (California), PDPA (Singapore/Thailand), UU PDP (Indonesia), PIPL (China) |
+| `biometric` — biometric data | BIPA (Illinois), GDPR Art. 9 (special category), local biometric laws |
+| `healthcare` — medical data | HIPAA (US), local health-data regulations |
+| `cross_border` — cross-border transfer | GDPR Chapter V, SCCs, local data-residency laws |
+| `children` — children's data | COPPA (US), GDPR Art. 8 |
 
-Steps:
-1. Based on confirmed signals, state: "Based on what you've told me, the following regulations likely apply to this initiative: [list]. Does this look right? Are there any I'm missing or that don't apply?"
-2. Wait for the user to confirm, correct, or add regulations.
-3. Record the confirmed regulation list. This list is used in §3 (Regulatory Context), §5 (Scope), and §13 (Risks & Mitigations).
-4. If the user is unsure which regulations apply: "I'll flag the areas as `[TBD — legal/compliance team to confirm applicable regulations]` and add it as an open item in §12 FAQ."
+**Step 2 — Confirm with the user.**
+State: "Based on what you've told me, the following regulations likely apply: [list]. This is a starting point from a registry last reviewed [date], not legal advice. Does this look right? Anything I'm missing or that doesn't apply?" Wait for the user to confirm, correct, or add. Record the confirmed list — it carries into §3 (Regulatory Context), §5 (Scope), and §13 (Risks & Mitigations).
 
-RULE: If a compliance signal was confirmed in §0.3, this step is mandatory. It cannot be skipped even if the user is uncertain — at minimum, flag it as TBD with an owner.
+**Step 3 — (Optional) Pull the exact obligation text.**
+For each confirmed regulation, you may offer: "Want me to pull the specific obligations from [official_url] so §3 cites the source directly?" If yes, `WebFetch` the `official_url`.
+- Apply the verify-before-write rule: show the user the exact quoted obligation before writing it.
+- Cite it: `[source: <official_url>, retrieved: YYYY-MM-DD]`.
+- If the fetch fails (auth wall, 404, JS-only, timeout), say so and ask the user to paste the relevant text, or keep the summary-level entry. Do NOT invent obligation text.
+- Fetch only the registry's `official_url` or a URL the user provides — never a URL found by searching.
+
+**Step 4 — If the user is unsure** which regulations apply: "I'll flag the areas as `[TBD — legal/compliance team to confirm applicable regulations]` and add it as an open item in §12 FAQ."
+
+RULE: If a compliance signal was confirmed in §0.3, this step is mandatory. It cannot be skipped even if the user is uncertain — at minimum, flag it as TBD with an owner. The registry is a starting point, not legal advice — always defer to the user and to legal/compliance, and never paraphrase regulation text as confirmed.
 
 ---
 
@@ -95,6 +110,7 @@ RULE: If a compliance signal was confirmed in §0.3, this step is mandatory. It 
 10. Does this depend on any third-party APIs, vendors, or external services?
     (e.g., payment processor, identity provider, logistics partner, cloud vendor, data provider)
     - _If yes:_ Auto-flag §14 Dependencies.
+    - _If yes:_ Note the vendor name(s). You'll run the "Reading Vendor / API Docs" procedure when filling §8 NFRs, §9 Technical Constraints, and §14 — to capture real rate limits, quotas, and SLAs instead of guessing.
 
 11. Are there external parties involved who need to be informed or who have sign-off authority?
     (e.g., regulators, compliance body, external partners, vendors with contractual SLAs)
@@ -170,6 +186,18 @@ Any single signal is sufficient to trigger the section.
 
 ---
 
+## Reading Vendor / API Docs (when third-party APIs are involved)
+
+Run this whenever a third-party API, vendor, or external service was named at §0.4 Q10 and you need its real constraints for §8 (NFRs), §9 (Technical Constraints), or §14 (Dependencies).
+
+1. Ask for the official documentation URL. If the user doesn't have it, suggest the official URL from `references/api-docs.md` and confirm before using it. Never use a URL you found by searching.
+2. `WebFetch` the confirmed URL. Extract only: rate limits, quotas, authentication model, SLA / uptime, pricing-tier limits, data residency / regions, webhook & idempotency behaviour.
+3. Apply verify-before-write: show the user each extracted value before it lands in the PRD.
+4. Cite every value: `[source: <url>, retrieved: YYYY-MM-DD]`. Feed them into §8 NFR rows, §9 Technical Constraints, and §14 dependency rows as appropriate.
+5. If the fetch fails or the doc doesn't state a value, write `[TBD — confirm with vendor docs]`. Never invent a rate limit, quota, or SLA.
+
+---
+
 ## §1 — Initiative Name
 
 1. What is the name of this initiative? (max 8 words, noun phrase)
@@ -202,6 +230,11 @@ Any single signal is sufficient to trigger the section.
    - _If the user says "we think" or "we believe" without data:_ "I'll capture that as an unvalidated team belief for now — written as `[Team belief — unvalidated: ___]`. Can you attach even a rough number or a single supporting reference? If not, I'll flag it as `[TBD — needs data]` so the reviewer knows it needs sourcing."
    - _If no evidence at all:_ "I'll mark this section as needing evidence. The Background section requires at least one cited source to pass validation. We'll continue and you can come back to this."
    - RULE: Do not write any claim as established fact unless the user provided either a number or a named source.
+
+2b. Is there an industry or competitive benchmark for this problem or its impact? (e.g., "peers in this segment see X%")
+   - _If yes:_ "What's the source, and how comparable is it — same segment, region, and metric definition? I'll record it in §3 Benchmarks with the source, the date it was measured, and a comparability caveat."
+   - _If a fetchable URL is given:_ `WebFetch` it, show the exact figure, and cite `[source: <url>, retrieved: YYYY-MM-DD]`.
+   - RULE: Never invent a benchmark figure. No benchmark → no row (or `[TBD — benchmark needed]`). A comparability caveat is mandatory — an uncaveated benchmark is misleading.
 
 3. Has this been attempted before? Is there any prior work or history we should acknowledge?
    - _If prior attempt exists:_ "What happened last time, and what's different now?"
@@ -268,6 +301,7 @@ Any single signal is sufficient to trigger the section.
    b. **Target:** What is the goal value, and by what date?
       - _If the user gives a directional target like "increase it":_ "I need a specific number or percentage. Even a rough commitment — what would make this initiative worth it?"
       - _If no target:_ Write `[TBD — target needed]`.
+      - _Benchmark basis:_ "Is this target grounded in a benchmark (industry or competitor), or is it an internal goal? If a benchmark, what's the comparable and source? I'll cite it from §3 Benchmarks." An internal goal is fine as-is; a benchmark-claimed target needs a source — never invent one to justify a target.
    c. **Measurement method:** How will this metric be measured? (specific tool, query, or dashboard name — not just "we'll track it")
    d. **Owner:** Who owns tracking and reporting on this metric? (individual name, not a team)
    e. **Type:** Is this a leading or lagging indicator?
@@ -318,6 +352,7 @@ Continue until the user explicitly says "no more stories" after the gap-check pr
 12. Are there availability or uptime requirements?
     - _For each:_ "How will this be verified or tested?"
 13. Are there rate limits, API quotas, or concurrency constraints that could affect this feature?
+    - _If a third-party API/vendor was named at §0.4 Q10:_ Run the "Reading Vendor / API Docs" procedure to pull real rate limits, quotas, and SLAs from the vendor's documentation. Cite each value; if the docs don't state it, write `[TBD — confirm with vendor docs]`. Never invent a limit.
 14. Are there data retention, deletion, or portability requirements?
     - _If the initiative handles PII (confirmed in §0.3):_ Ask this question unconditionally and mark the answer as compliance-required.
 
@@ -339,6 +374,7 @@ Continue until the user explicitly says "no more stories" after the gap-check pr
 
 5. Are there any technical constraints or architectural decisions that shaped this solution?
    - _If the user says "I don't know" or defers to engineering:_ "Are there any known database limitations, third-party API rate limits, mobile OS restrictions, or platform architecture decisions already established that we should capture?"
+   - _If a third-party API/vendor is involved:_ Use the "Reading Vendor / API Docs" procedure to capture documented constraints (auth model, rate limits, data residency) with citations.
 
 6. Does this solution create any new backend services, data models, or API contracts that don't currently exist?
    - _If yes:_ "These are likely dependencies for other teams. I'll flag them for §14 (Dependencies)." If §14 is not already triggered, recommend adding it.

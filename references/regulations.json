@@ -1,0 +1,189 @@
+{
+  "version": "v1.0",
+  "last_reviewed": "2026-05-29",
+  "note": "Curated starting point, not legal advice. official_url points to the issuing authority or an official text; deep links may move. The skill ALWAYS confirms the candidate list with the user and verifies any fetched text before writing it. When unsure, fall back to '[TBD - legal/compliance to confirm]'.",
+  "signals_vocabulary": {
+    "payments": "Financial transactions, payment flows, money movement",
+    "ekyc": "Identity verification, eKYC, KYB, AML/CFT onboarding",
+    "pii": "Personal data / PII beyond basic profile fields",
+    "credit": "Credit, lending, BNPL, financing products",
+    "insurance": "Insurance products",
+    "biometric": "Biometric data (face, fingerprint, voice)",
+    "healthcare": "Healthcare or medical data",
+    "cross_border": "Cross-border / international data transfer",
+    "children": "Data about children or minors"
+  },
+  "geography_note": "Geographies use country codes (ISO 3166-1 alpha-2), optionally with a subdivision suffix (e.g. US-CA, US-IL). GLOBAL means not geography-bound. Matching is country-level: a request for 'US' matches 'US-CA' entries and vice versa.",
+  "regulations": [
+    {
+      "id": "gdpr",
+      "name": "GDPR (Regulation (EU) 2016/679)",
+      "jurisdiction": "European Union / EEA",
+      "signals": ["pii", "biometric", "cross_border", "children"],
+      "geographies": ["EU"],
+      "official_url": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+      "summary": "General Data Protection Regulation. Lawful basis for processing, data-subject rights (access, deletion, portability), DPIAs, breach notification; Art. 9 covers biometrics, Chapter V covers cross-border transfers.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "psd2",
+      "name": "PSD2 (Directive (EU) 2015/2366)",
+      "jurisdiction": "European Union / EEA",
+      "signals": ["payments"],
+      "geographies": ["EU"],
+      "official_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32015L2366",
+      "summary": "Revised Payment Services Directive. Strong Customer Authentication (SCA), open-banking access to accounts, licensing of payment service providers.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "pci-dss",
+      "name": "PCI-DSS",
+      "jurisdiction": "Global (card networks)",
+      "signals": ["payments"],
+      "geographies": ["GLOBAL"],
+      "official_url": "https://www.pcisecuritystandards.org/document_library/",
+      "summary": "Payment Card Industry Data Security Standard. Controls for storing, processing, and transmitting cardholder data; scoping and network segmentation; annual assessment.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "hipaa",
+      "name": "HIPAA",
+      "jurisdiction": "United States",
+      "signals": ["healthcare", "pii"],
+      "geographies": ["US"],
+      "official_url": "https://www.hhs.gov/hipaa/for-professionals/index.html",
+      "summary": "Health Insurance Portability and Accountability Act. Privacy and Security Rules for protected health information (PHI), breach notification, Business Associate Agreements.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "ccpa-cpra",
+      "name": "CCPA / CPRA",
+      "jurisdiction": "United States - California",
+      "signals": ["pii"],
+      "geographies": ["US-CA"],
+      "official_url": "https://oag.ca.gov/privacy/ccpa",
+      "summary": "California Consumer Privacy Act as amended by CPRA. Consumer rights to know, delete, correct, and opt out of sale/sharing; sensitive personal information category.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "coppa",
+      "name": "COPPA",
+      "jurisdiction": "United States",
+      "signals": ["children", "pii"],
+      "geographies": ["US"],
+      "official_url": "https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa",
+      "summary": "Children's Online Privacy Protection Rule. Verifiable parental consent before collecting personal data from children under 13; notice and data-minimization duties.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "bipa",
+      "name": "BIPA (740 ILCS 14)",
+      "jurisdiction": "United States - Illinois",
+      "signals": ["biometric"],
+      "geographies": ["US-IL"],
+      "official_url": "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004&ChapterID=57",
+      "summary": "Illinois Biometric Information Privacy Act. Written consent before collecting biometric identifiers, retention/destruction schedule, private right of action.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "fatf-aml",
+      "name": "FATF AML/CFT Recommendations",
+      "jurisdiction": "Global (FATF)",
+      "signals": ["ekyc", "payments"],
+      "geographies": ["GLOBAL"],
+      "official_url": "https://www.fatf-gafi.org/en/topics/fatf-recommendations.html",
+      "summary": "International AML/CFT standards. Customer due diligence (CDD/EDD), beneficial-ownership, suspicious-transaction reporting, risk-based approach. Implemented locally by national regulators.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "ojk-pojk-12-2018",
+      "name": "OJK POJK 12/POJK.03/2018",
+      "jurisdiction": "Indonesia",
+      "signals": ["ekyc"],
+      "geographies": ["ID"],
+      "official_url": "https://www.ojk.go.id/",
+      "summary": "Indonesian Financial Services Authority rule on implementation of digital banking services, including electronic CDD/eKYC obligations for banks.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "ojk-pojk-35-2018",
+      "name": "OJK POJK 35/POJK.05/2018",
+      "jurisdiction": "Indonesia",
+      "signals": ["credit"],
+      "geographies": ["ID"],
+      "official_url": "https://www.ojk.go.id/",
+      "summary": "Indonesian Financial Services Authority rule on the business conduct of financing (multifinance) companies, including consumer-credit obligations.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "bi-snap",
+      "name": "Bank Indonesia SNAP (National Open API Payment Standard)",
+      "jurisdiction": "Indonesia",
+      "signals": ["payments"],
+      "geographies": ["ID"],
+      "official_url": "https://www.bi.go.id/",
+      "summary": "Bank Indonesia's Standar Nasional Open API Pembayaran. Mandatory technical, security, and data standards for payment open APIs in Indonesia.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "mas-notice-626",
+      "name": "MAS Notice 626",
+      "jurisdiction": "Singapore",
+      "signals": ["ekyc", "payments"],
+      "geographies": ["SG"],
+      "official_url": "https://www.mas.gov.sg/regulation/notices/notice-626",
+      "summary": "Monetary Authority of Singapore AML/CFT notice to banks. Customer due diligence, ongoing monitoring, and record-keeping requirements.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "rbi",
+      "name": "RBI Regulations (India)",
+      "jurisdiction": "India",
+      "signals": ["payments", "ekyc"],
+      "geographies": ["IN"],
+      "official_url": "https://www.rbi.org.in/",
+      "summary": "Reserve Bank of India directions covering payment systems, KYC Master Direction, and data-localisation of payment data within India.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "pdpa-sg",
+      "name": "PDPA (Singapore)",
+      "jurisdiction": "Singapore",
+      "signals": ["pii"],
+      "geographies": ["SG"],
+      "official_url": "https://www.pdpc.gov.sg/overview-of-pdpa/the-legislation/personal-data-protection-act",
+      "summary": "Singapore Personal Data Protection Act. Consent, purpose limitation, notification, access/correction, and data-breach notification obligations.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "pdpa-th",
+      "name": "PDPA (Thailand)",
+      "jurisdiction": "Thailand",
+      "signals": ["pii"],
+      "geographies": ["TH"],
+      "official_url": "https://www.pdpc.or.th/",
+      "summary": "Thailand Personal Data Protection Act. Lawful basis and consent, data-subject rights, cross-border transfer rules, breach notification.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "uu-pdp-id",
+      "name": "UU PDP (Law No. 27 of 2022, Indonesia)",
+      "jurisdiction": "Indonesia",
+      "signals": ["pii", "cross_border"],
+      "geographies": ["ID"],
+      "official_url": "https://peraturan.bpk.go.id/",
+      "summary": "Indonesia's Personal Data Protection Law (Undang-Undang Perlindungan Data Pribadi No. 27/2022). Lawful processing, data-subject rights, controller/processor duties, cross-border transfer conditions.",
+      "last_reviewed": "2026-05-29"
+    },
+    {
+      "id": "pipl-cn",
+      "name": "PIPL (China)",
+      "jurisdiction": "China",
+      "signals": ["pii", "cross_border"],
+      "geographies": ["CN"],
+      "official_url": "http://www.npc.gov.cn/",
+      "summary": "Personal Information Protection Law of the PRC. Separate consent for sensitive data, cross-border transfer security assessment, data-localisation for critical operators.",
+      "last_reviewed": "2026-05-29"
+    }
+  ]
+}

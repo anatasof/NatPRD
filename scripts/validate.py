@@ -35,7 +35,9 @@ SECTION_NAMES = {
 
 VALID_STATUSES = {"Draft", "In Review", "Approved", "In Execution", "Deprecated"}
 APPROVED_OR_BEYOND = {"Approved", "In Execution", "Deprecated"}
-SEMANTIC_ONLY = {"§3", "§4", "§5", "§9", "§10", "§12"}
+# Sections with no deterministic check (return full marks; the model layers checks on top).
+# §10 and §12 used to live here; they now have structural checks below.
+SEMANTIC_ONLY = {"§3", "§4", "§5", "§9"}
 
 TBD_PATTERN = re.compile(r"\[TBD[^\]]*\]")
 H2_PATTERN = re.compile(r"^## (\d+)\.\s+(.+?)\s*$", re.MULTILINE)
@@ -45,6 +47,8 @@ USER_STORY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 EVENT_NAME_PATTERN = re.compile(r"^[a-z][a-z0-9]*(_[a-z0-9]+)+$")
+SOURCE_PATTERN = re.compile(r"\[source:\s*([^\]]+)\]", re.IGNORECASE)
+REFERENCES_HEADING = re.compile(r"^#{1,4}\s+(references|sources)\b", re.IGNORECASE | re.MULTILINE)
 
 
 def split_sections(content: str) -> Dict[str, str]:
@@ -271,7 +275,8 @@ def check_section_8(text: str) -> Tuple[int, List[str], List[str]]:
             violations.append(f"§8: {story_id} has fewer than 2 Gherkin scenarios (found {len(scenarios)})")
             score -= 3
         if not re.search(r"Must[-\s]?have|Should[-\s]?have|Could[-\s]?have|Won.t[-\s]?have", block, re.IGNORECASE):
-            warnings.append(f"§8: {story_id} missing MoSCoW priority")
+            # section-rules.md §8 lists missing MoSCoW as a VIOLATION, not a warning.
+            violations.append(f"§8: {story_id} missing MoSCoW priority")
             score -= 1
     return max(0, score), violations, warnings
 
@@ -297,13 +302,116 @@ def check_section_11(text: str) -> Tuple[int, List[str], List[str]]:
     return max(0, score), violations, warnings
 
 
+def check_section_10(text: str) -> Tuple[int, List[str], List[str]]:
+    """Structural checks for Metric Monitoring. Named-vs-team DRI stays semantic."""
+    violations: List[str] = []
+    warnings: List[str] = []
+    score = 5
+    kv = parse_kv_table(text)
+    tool = kv.get("Dashboard / Tool") or kv.get("Dashboard/Tool") or kv.get("Dashboard") or ""
+    if not is_filled(tool):
+        violations.append("§10: No monitoring tool or dashboard named")
+        score -= 1
+    if not is_filled(kv.get("DRI", "")):
+        violations.append("§10: Monitoring DRI is missing")
+        score -= 1
+    threshold = (
+        kv.get("Primary Metric Alert Threshold")
+        or kv.get("Alert Threshold")
+        or ""
+    )
+    if not is_filled(threshold):
+        violations.append("§10: No alert threshold defined for primary metrics")
+        score -= 1
+    if not is_filled(kv.get("Rollback Trigger", "")):
+        violations.append("§10: No rollback trigger defined")
+        score -= 1
+    has_date = False
+    for row in parse_tables(text):
+        date = row.get("Date", "")
+        if is_filled(date) and date.strip().upper() != "YYYY-MM-DD":
+            has_date = True
+            break
+    if not has_date:
+        violations.append("§10: No post-launch review dates set")
+        score -= 1
+    return max(0, score), violations, warnings
+
+
+def check_section_12(text: str) -> Tuple[int, List[str], List[str]]:
+    """FAQ: present + at least one entry + open items have owners = full marks."""
+    violations: List[str] = []
+    warnings: List[str] = []
+    faq_rows = [r for r in parse_tables(text) if "Status" in r]
+    if not faq_rows:
+        warnings.append("§12: FAQ has zero entries (acceptable only for brand-new drafts)")
+        return 3, violations, warnings
+    open_missing_owner = False
+    for row in faq_rows:
+        status = row.get("Status", "").strip("`").strip().lower()
+        if "open" in status:
+            owner = row.get("Answered By") or row.get("Owner") or ""
+            if not is_filled(owner):
+                open_missing_owner = True
+                warnings.append("§12: Open FAQ item has no assigned owner")
+    return (3 if open_missing_owner else 5), violations, warnings
+
+
+def check_citations(content: str) -> List[str]:
+    """Cross-cutting (not scored): every [source: …] needs a retrieved: date and a
+    References/Sources section to consolidate provenance."""
+    warnings: List[str] = []
+    sources = SOURCE_PATTERN.findall(content)
+    flagged: set = set()
+    for raw in sources:
+        inner = raw.strip()
+        if "retrieved:" not in inner.lower():
+            key = inner.split(",")[0].strip()[:60]
+            if key not in flagged:
+                warnings.append(f"§citations: source missing 'retrieved:' date — {key}")
+                flagged.add(key)
+    if sources and not REFERENCES_HEADING.search(content):
+        warnings.append("§citations: inline sources present but no References/Sources section found")
+    return warnings
+
+
+def check_compliance(sections: Dict[str, str]) -> List[str]:
+    """Cross-cutting (not scored, blocks Approved): §13 regulatory-risk rows must name a
+    specific regulation and a named owner. Scoped to what is verifiable from the document —
+    the validator cannot know the intake state, so it only checks §13 when it is present."""
+    violations: List[str] = []
+    s13 = sections.get("§13", "")
+    if not s13:
+        return violations
+    for row in parse_tables(s13):
+        if "Regulation" not in row:  # operational-risk rows have no Regulation column
+            continue
+        rid = row.get("ID") or "<row>"
+        reg = row.get("Regulation", "").strip("`").strip()
+        is_generic = (
+            not reg
+            or reg in {"—", "-", "–"}
+            or reg.lower() in {"regulatory risk", "compliance risk", "regulation"}
+            or (PLACEHOLDER_PATTERN.match(reg) and not reg.upper().startswith("[TBD"))
+        )
+        if is_generic:
+            violations.append(
+                f"§13: Regulatory risk row {rid} does not name a specific regulation"
+            )
+        if not is_filled(row.get("Owner", "")):
+            violations.append(f"§13: Regulatory risk row {rid} has no named owner")
+    return violations
+
+
 CHECKERS = {
     "§1": check_section_1,
     "§2": check_section_2,
     "§6": check_section_6,
     "§7": check_section_7,
     "§8": check_section_8,
+    "§10": check_section_10,
     "§11": check_section_11,
+    "§12": check_section_12,
 }
 
 
@@ -349,6 +457,15 @@ def validate(path: Path) -> Dict[str, Any]:
         results["violations"].extend(viol)
         results["warnings"].extend(warn)
         total += score
+    # Cross-cutting checks (not scored — advisory, or approval-blocking for compliance).
+    citation_warnings = check_citations(content)
+    compliance_violations = check_compliance(sections)
+    results["warnings"].extend(citation_warnings)
+    results["violations"].extend(compliance_violations)
+    results["cross_checks"] = {
+        "citation_warnings": citation_warnings,
+        "compliance_violations": compliance_violations,
+    }
     results["score"] = total
     results["max_score"] = sum(SECTION_MAX.values())
     results["band"] = score_band(total)

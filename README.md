@@ -9,12 +9,16 @@ Built on the **Common PRD Standards** — 12 core sections, 4 optional sections,
 ## What It Does
 
 - **Runs an upfront intake** to gather product type, platform, team structure, compliance exposure, and discovery maturity before any section begins — so every subsequent question is targeted and context-aware
-- **Identifies applicable regulations** when compliance signals are present (payments, eKYC, PII, regulated data) — maps them to GDPR, PCI-DSS, HIPAA, OJK, and others, confirms the list with you, and propagates them into Background, Scope, and Risks automatically
+- **Identifies applicable regulations** when compliance signals are present (payments, eKYC, PII, regulated data) — looks them up in a bundled, versioned registry (GDPR, PCI-DSS, HIPAA, OJK, PDPA, and more) with official source URLs, confirms the list with you, and propagates them into Background, Scope, and Risks automatically
+- **Reads the source** on request — fetches the official regulation page, a vendor's API docs, or a benchmark URL you name, quotes the exact text, and cites it. Never searches the web on its own
+- **Captures benchmarks** with a mandatory comparability caveat and source, so targets are grounded rather than guessed
+- **Pulls real API constraints** (rate limits, quotas, SLAs) from vendor docs into NFRs, Solution, and Dependencies
 - **Interviews** you section by section with focused, contextual questions
 - **Validates** every answer against the section rules before moving on
 - **Enforces** user story format for all requirements
 - **Generates** Gherkin acceptance criteria automatically
 - **Never fabricates content** — if you don't have an answer, it writes `[TBD]` instead of inventing metrics, names, dates, or evidence
+- **Cites every sourced fact** inline and consolidates them in a References / Sources section
 - **Scores** the completed PRD out of 100 with a detailed validation report
 - **Outputs** a production-ready `docs/prd.md` file
 
@@ -136,8 +140,12 @@ natprd/
 │   ├── interview-questions.md        ← Questions asked per section during generation
 │   ├── section-rules.md              ← Full rules per section (used in validation)
 │   └── validation-rules.md           ← Scoring rubric and report format
+├── references/
+│   ├── regulations.json              ← Versioned regulation registry (signal+geo → regs + official URLs)
+│   └── api-docs.md                   ← Official vendor documentation URLs
 └── scripts/
-    └── validate.py                   ← Deterministic baseline validator (Python 3, stdlib only)
+    ├── validate.py                   ← Deterministic baseline validator (Python 3, stdlib only)
+    └── lookup_regulation.py          ← Registry-backed regulation lookup (Python 3, stdlib only)
 ```
 
 ### Validation script
@@ -155,6 +163,8 @@ Outputs JSON with per-section scores, violations, and warnings. No dependencies 
 ## Network Access
 
 The skill declares `WebFetch` in its `allowed-tools` so it can fetch public URLs the user explicitly references during the interview (research articles, regulatory body pages, vendor docs). Every fetched fact is shown to you for confirmation before it lands in the PRD, carries an inline `[source: …, retrieved: YYYY-MM-DD]` annotation, and is quoted directly — never paraphrased.
+
+Two bundled registries (`references/regulations.json`, `references/api-docs.md`) let the skill *suggest* authoritative URLs — regulation pages and vendor API docs — without searching. They are read locally (no network); only the URL you confirm is then fetched. The regulation registry is queried with `scripts/lookup_regulation.py` and carries a `last_reviewed` date — it's a starting point, not legal advice.
 
 The skill never goes searching for sources on its own (no `WebSearch`). Auth-walled tools (Confluence, Jira, internal wikis) cannot be fetched — you'll be asked to paste the relevant excerpt instead.
 
@@ -174,7 +184,7 @@ If you don't want any outbound network calls, remove `WebFetch` from the `allowe
 
 ## Compliance-Aware Workflow
 
-When a compliance signal is confirmed at intake (payments, eKYC, KYB, PII, biometrics, healthcare, or cross-border data), the skill runs a dedicated regulation identification step before the main interview. It presents a signal-to-regulation mapping (GDPR, PCI-DSS, HIPAA, OJK, PDPA, and more), confirms the list with you, and carries the confirmed regulations forward automatically:
+When a compliance signal is confirmed at intake (payments, eKYC, KYB, PII, biometrics, healthcare, or cross-border data), the skill runs a dedicated regulation identification step before the main interview. It queries the bundled regulation registry (`references/regulations.json`) via `scripts/lookup_regulation.py`, presents the candidate regulations with their official source URLs (GDPR, PCI-DSS, HIPAA, OJK, PDPA, and more), confirms the list with you, optionally fetches the official text to quote the exact obligation, and carries the confirmed regulations forward automatically:
 
 - **Background** — adds a Regulatory Context table with jurisdiction, key obligations, and review status
 - **Scope** — flags regulatory-driven in/out-of-scope items separately so reviewers can trace them

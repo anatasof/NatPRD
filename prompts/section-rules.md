@@ -38,11 +38,13 @@ A violation blocks progression to the next section. Warnings are noted but do no
 - No evidence or data source cited for any claim
 - Cost of inaction is absent
 - Compliance signals were confirmed in §0.3 but no Regulatory Context subsection is present (even a TBD entry is required)
+- A benchmark figure is stated without a source
 
 **WARNINGS:**
 - Section is shorter than 3 paragraphs (may be underdeveloped)
 - Section is longer than 5 paragraphs without links to supporting documents
 - Context & History is absent for an initiative that appears to be a continuation of prior work
+- A benchmark row has no comparability caveat (segment / region / definition differences)
 
 ---
 
@@ -99,6 +101,7 @@ A violation blocks progression to the next section. Warnings are noted but do no
 **WARNINGS:**
 - A metric uses a vanity measure (page views, installs, registrations) without a paired quality metric
 - Metric owner is listed as a team name instead of an individual
+- A target is presented as an industry/competitor benchmark but cites no source
 
 ---
 
@@ -115,6 +118,7 @@ A violation blocks progression to the next section. Warnings are noted but do no
 **WARNINGS:**
 - A user story appears too large to be delivered in a single sprint (suggest splitting)
 - A dependency between stories is described in prose rather than listed in the Dependencies field
+- A rate limit, quota, or SLA is stated as fact in an NFR but cites no vendor-doc source
 
 ---
 
@@ -129,6 +133,7 @@ A violation blocks progression to the next section. Warnings are noted but do no
 **WARNINGS:**
 - A design artifact link is present but marked as Draft (flag for reviewer attention)
 - One or more user stories from §8 are not covered in the coverage map
+- A technical constraint attributed to a third-party API cites no vendor-doc source
 
 ---
 
@@ -199,6 +204,7 @@ A violation blocks progression to the next section. Warnings are noted but do no
 **WARNINGS:**
 - Downstream dependencies are absent (may be intentional — ask user to confirm)
 - Escalation path is missing for any upstream dependency
+- A third-party API dependency states rate limits or SLAs without citing the vendor docs
 
 ---
 
@@ -228,3 +234,18 @@ A violation blocks progression to the next section. Warnings are noted but do no
 - Communication cadence is absent for one or more stakeholders
 - External stakeholders are not distinguished from internal ones
 - A Consulted (C) stakeholder appears to be receiving only Informed (I) treatment based on context
+
+---
+
+## Citations & Sources (cross-cutting)
+
+Applies to every section that asserts an externally-sourced fact (evidence, benchmarks, regulatory obligations, vendor-doc limits).
+
+**VIOLATIONS (block):**
+- A sourced fact is paraphrased rather than quoted directly (numbers and named-source quotes must be verbatim)
+- A fact is attributed to a source the user never named (no autonomous search — if the user didn't name it, it doesn't exist for PRD purposes)
+
+**WARNINGS:**
+- An inline `[source: …]` annotation is missing a `retrieved:` date
+- A cited source does not appear in the §References / Sources table
+- The same source is cited inline with inconsistent identifiers

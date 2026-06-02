@@ -114,6 +114,15 @@ The skill enriches PRDs with verifiable facts from sources **the user explicitly
 
 The skill NEVER goes searching for sources on its own (no `WebSearch`). If the user did not name a source, it does not exist for PRD purposes — write `[TBD — needs source]` instead.
 
+### Bundled registries (fetch-only lookup)
+
+Two curated, versioned registries let the skill *suggest* authoritative sources without searching. They never replace user confirmation, and the skill still only `WebFetch`es a URL the registry or the user provided — never one it discovered by searching. `allowed-tools` is unchanged: `Bash` runs the lookup scripts, `WebFetch` reads confirmed URLs. No `WebSearch`.
+
+- **`references/regulations.json`** — signal + geography → applicable regulations with official source URLs. Queried via `python3 scripts/lookup_regulation.py --signals <list> --geo <code>` during §0.3b. Carries a `last_reviewed` date; it is a starting point, not legal advice. The skill confirms candidates with the user, then optionally `WebFetch`es each `official_url` to quote the exact obligation (verify-before-write + citation).
+- **`references/api-docs.md`** — official documentation URLs for common vendors. When a third-party API is named (§0.4 Q10) but no link is given, the skill suggests the official URL, the user confirms, and the skill `WebFetch`es it to extract rate limits, quotas, and SLAs into §8/§9/§14 — with citations, and `[TBD — confirm with vendor docs]` when a value isn't stated.
+
+**Benchmarks** follow the same fetch-only rule: user-pasted or `WebFetch`ed from a named URL, recorded in §3 Benchmarks with a mandatory comparability caveat and a retrieved date. Benchmarks are never bundled or invented.
+
 ### Fetch flow
 
 1. User mentions a path or URL during §0.6, §3, §4, §7, or any interview turn.
@@ -137,6 +146,8 @@ Verifiable facts only:
 - Direct quotes (1–2 sentences) attributable to a named source.
 - Named people (researcher, owner, approver) — cite role and source.
 - Regulations or standards named in the source — cite the exact reference.
+- Benchmarks (industry / competitor figures) — quote the value with its date and a comparability caveat.
+- API / vendor constraints (rate limits, quotas, SLAs, data residency) — quote from the official docs.
 
 ### How to attribute
 
@@ -291,6 +302,9 @@ Step 5 — Re-run validation on the updated section.
 | `templates/prd-template.md` | The blank PRD template | Mode 1 when assembling final output |
 | `templates/prd-summary-template.md` | One-page stakeholder summary template | When user requests a summary |
 | `scripts/validate.py` | Deterministic baseline validator (run via Bash) | Modes 1, 2 — before producing report |
+| `scripts/lookup_regulation.py` | Registry-backed regulation lookup (run via Bash) | Mode 1 §0.3b when compliance signals exist |
+| `references/regulations.json` | Versioned regulation registry (signal+geo → regs + official URLs) | Loaded by the lookup script; not read into context directly |
+| `references/api-docs.md` | Official vendor documentation URLs | Mode 1 when a third-party API is named (§0.4 Q10) |
 
 See [README.md](README.md) for installation, the full feature list, and the FAQ.
 

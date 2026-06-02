@@ -79,3 +79,28 @@ If optional sections are present, validate them against their rules in `section-
 Add their violations and warnings to the report.
 Optional sections are not scored (they do not contribute to the 100-point total)
 but violations in them block the PRD from being marked `Approved`.
+
+---
+
+## Deterministic Validator Coverage
+
+`scripts/validate.py` enforces the *structural* subset of this rubric. The scoring total is
+unchanged at **100** — the checks below enforce existing rubric items; they do not add points.
+
+| Section | Deterministic check | Notes |
+|---|---|---|
+| §1, §2, §6, §7, §8, §11 | As before | — |
+| §8 MoSCoW | Missing MoSCoW is a **violation** (−1) | Now matches `section-rules.md` §8 (was previously emitted as a warning) |
+| §10 Metric Monitoring | DRI / dashboard / primary alert threshold / rollback trigger / ≥1 review date present (−1 each) | Named-vs-team DRI stays a semantic check for the model |
+| §12 FAQ | ≥1 entry and open items have owners → 5; present but missing → 3 | Zero entries warns; absent scores 0 |
+| §3, §4, §5, §9 | None (semantic-only) | Full marks; model layers checks on top |
+
+**Cross-cutting checks** (emitted under a `cross_checks` object, not added to the section score):
+
+- **Citations** (`citation_warnings`): every inline `[source: …]` should carry a `retrieved:` date,
+  and a `References / Sources` section should exist. Reported as warnings.
+- **Compliance** (`compliance_violations`): when §13 contains a regulatory-risk table, each row must
+  name a specific regulation (not generic "regulatory risk") and a named owner. Reported as
+  violations — these block `Approved` but do not change the score (§13 is optional/unscored). The
+  validator only checks §13 when present; it cannot know the intake state, so the model still
+  enforces "compliance signals confirmed → Regulatory Context required".

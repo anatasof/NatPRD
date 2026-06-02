@@ -59,6 +59,13 @@
 ### Evidence & Data
 [Cite data, research, support tickets, NPS feedback, or incidents. No unsubstantiated claims.]
 
+### Benchmarks
+*(Optional — include when an industry or competitive benchmark grounds the problem or a target. User-sourced or WebFetched from a named URL only; never invented.)*
+
+| Metric | Benchmarked Value | Source | Date | Comparability Caveat | Retrieved |
+|---|---|---|---|---|---|
+| [Metric] | [Value] | [Report / URL] | [Date measured] | [How comparable — segment, region, definition differences] | YYYY-MM-DD |
+
 ### Context & History
 [Prior work, failed attempts, or related initiatives. Link to prior PRDs or post-mortems.]
 
@@ -79,6 +86,7 @@
 ### Rules
 - Lead with pain, not solution.
 - Every claim needs a cited source.
+- Benchmarks are user-sourced or WebFetched from a named URL — never invented. Every benchmark row needs a comparability caveat and a retrieved date.
 - 3–5 paragraphs. Link to longer docs rather than embedding.
 - Cost of inaction is mandatory.
 - Regulatory Context is mandatory when any compliance signal was confirmed at intake. Write `[TBD — compliance review required: [regulation name]]` if specifics are unknown — do not omit the subsection entirely.
@@ -175,11 +183,15 @@
 |---|---|---|---|---|
 | [Metric] | [Value] | [Threshold] | [Method] | [Name] |
 
+### Target Basis
+*(Optional — when a target is grounded in a benchmark rather than internal history, cite the benchmark from §3 Benchmarks here.)*
+
 ### Rules
 - Min one leading + one lagging metric.
 - Guardrail metrics are mandatory.
 - All fields required per row.
 - Owner = named individual, not team.
+- A target grounded in a benchmark must cite it; an ungrounded target is `[TBD — benchmark needed]`, not a guess.
 
 ---
 
@@ -355,6 +367,22 @@ Scenario: [Edge case or failure]
 - Open items need an owner.
 - Never delete resolved questions.
 - At Approved: zero Open items without a resolution plan.
+
+---
+
+## References / Sources
+
+> Consolidated provenance for every externally-sourced fact in this PRD. Each inline
+> `[source: …, retrieved: YYYY-MM-DD]` annotation should resolve to a row here.
+
+| Source | Type | Retrieved | Used In |
+|---|---|---|---|
+| [path, URL, or "user-pasted excerpt from …"] | file / url / paste | YYYY-MM-DD | [§N, §N] |
+
+### Rules
+- Every distinct source cited inline must appear here exactly once.
+- `Type` is one of: file (local path), url (public, WebFetched), paste (auth-walled excerpt the user pasted).
+- Quote facts directly in-section; never paraphrase a source. No source = no claim (use `[TBD — needs source]`).
 
 ---
 

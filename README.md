@@ -280,14 +280,16 @@ The report separates hard problems (**violations** — things that must be fixed
 
 ## Does it use the internet?
 
-Mostly no, and never behind your back.
+**Yes — because Claude does.** The skill is just a set of instructions that Claude follows, and Claude runs by talking to Anthropic's servers over the internet (in both Claude Code and the Claude app). So this isn't an offline tool: you need a connection for it to work at all, and your conversation — including any files or text you share — is sent to Claude exactly like in a normal chat.
 
-- It reads **files on your computer** and the **built-in reference lists** without any internet.
-- It only reaches the internet to **fetch a specific web page you named** (or an official source it suggested and you confirmed). Every fetched fact is shown to you before it's used.
+What the skill itself **won't** do is wander off and browse the web on its own. That part is deliberately locked down:
+
+- It only opens a **web page you named** (or an official source it suggested and you confirmed), and it shows you every fetched fact before using it.
 - It **never runs open-ended web searches.** If you didn't name a source, the skill treats it as not existing and writes a `[TBD]` instead.
+- Reading **files on your computer** and the **built-in reference lists** pulls nothing extra from the web — though, like everything in the chat, their contents are still processed by Claude.
 - Private/locked pages (Confluence, Jira, internal wikis) can't be fetched — it'll ask you to paste the relevant text instead.
 
-If you want **zero** outbound connections, you can remove the `WebFetch` capability from the top of `SKILL.md`; the skill still works, it just asks you to paste anything it would otherwise fetch.
+You can switch the skill's own web access off entirely by removing the `WebFetch` capability from the top of `SKILL.md`; it still works, it just asks you to paste anything it would otherwise fetch. (That only stops the skill from fetching pages — it doesn't make Claude itself run offline.)
 
 ---
 
@@ -450,7 +452,7 @@ Yes — that's encouraged. See [Customize it for your team](#customize-it-for-yo
 No. It's a helpful, dated starting point that always asks you to confirm and points to official sources. Treat it as a prompt to check with legal/compliance, not a substitute for them.
 
 **Is my data sent anywhere?**
-Only pages you explicitly name (or confirm) are fetched, and you see every fetched fact before it's used. There are no background web searches. See [Does it use the internet?](#does-it-use-the-internet).
+Your conversation is processed by Claude over the internet, just like any other Claude chat — that's how Claude works at all. Beyond that, the skill fetches only the pages you explicitly name (or confirm), shows you every fetched fact before using it, and never runs background web searches. See [Does it use the internet?](#does-it-use-the-internet).
 
 ---
 

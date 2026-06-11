@@ -75,11 +75,11 @@ _If the script cannot run_ (e.g., the Claude app has no filesystem), fall back t
 | `ekyc` — identity / eKYC / KYB | FATF AML/CFT, local eKYC reg (OJK POJK 12/2018, MAS Notice 626), GDPR (EU) |
 | `credit` — credit / lending / BNPL | Local consumer-credit reg (OJK POJK 35/2018), CCPA/CPRA (California) |
 | `insurance` — insurance products | Local insurance authority regulations |
-| `pii` — personal data beyond basic profile | GDPR (EU/EEA), CCPA/CPRA (California), PDPA (Singapore/Thailand), UU PDP (Indonesia), PIPL (China) |
+| `pii` — personal data beyond basic profile | GDPR (EU/EEA), UK GDPR & DPA 2018 (UK), CCPA/CPRA (California), PDPA (Singapore/Thailand), UU PDP (Indonesia), PIPL (China), LGPD (Brazil), DPDP Act (India), PIPEDA (Canada), Privacy Act/APPs (Australia) |
 | `biometric` — biometric data | BIPA (Illinois), GDPR Art. 9 (special category), local biometric laws |
 | `healthcare` — medical data | HIPAA (US), local health-data regulations |
 | `cross_border` — cross-border transfer | GDPR Chapter V, SCCs, local data-residency laws |
-| `children` — children's data | COPPA (US), GDPR Art. 8 |
+| `children` — children's data | COPPA (US), GDPR Art. 8, DPDP Act (India), LGPD (Brazil) |
 
 **Step 2 — Confirm with the user.**
 State: "Based on what you've told me, the following regulations likely apply: [list]. This is a starting point from a registry last reviewed [date], not legal advice. Does this look right? Anything I'm missing or that doesn't apply?" Wait for the user to confirm, correct, or add. Record the confirmed list — it carries into §3 (Regulatory Context), §5 (Scope), and §13 (Risks & Mitigations).

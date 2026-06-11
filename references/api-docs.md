@@ -20,7 +20,7 @@ tiers, data residency / region options, webhook and idempotency behaviour.
 - `last_reviewed` reflects when this list was last checked; URLs may move — fall back to
   asking the user for the current link.
 
-**last_reviewed:** 2026-05-29
+**last_reviewed:** 2026-06-11
 
 | Vendor | Category | Official Docs URL |
 |---|---|---|
@@ -35,6 +35,8 @@ tiers, data residency / region options, webhook and idempotency behaviour.
 | Onfido | Identity / eKYC | https://documentation.onfido.com/ |
 | Jumio | Identity / eKYC | https://docs.jumio.com/ |
 | Persona | Identity / eKYC | https://docs.withpersona.com/ |
+| VIDA | Identity / eKYC / digital signature (ID) | https://docs.vida.id/ |
+| Verihubs | Identity / eKYC / liveness / OCR (ID) | https://docs.verihubs.com/ |
 | Auth0 | Authentication | https://auth0.com/docs |
 | Okta | Authentication / SSO | https://developer.okta.com/docs/ |
 | AWS | Cloud infrastructure | https://docs.aws.amazon.com/ |
@@ -45,6 +47,14 @@ tiers, data residency / region options, webhook and idempotency behaviour.
 | Segment | Analytics / CDP | https://segment.com/docs/ |
 | Amplitude | Analytics | https://amplitude.com/docs |
 | Google Analytics (GA4) | Analytics | https://developers.google.com/analytics |
+
+**Vendors with gated docs** — these publish no public API documentation, so they have no row
+above. Treat them like any auth-walled source: ask the user (or the vendor) for access and
+paste the relevant excerpt.
+
+- **Privy** (privy.id — the Indonesian digital-identity / digital-signature provider; not to
+  be confused with privy.io, a US web3 auth company). API docs are provided on request.
+- **ASLI RI** (asliri.id — Indonesian biometric verification / eKYC). Docs via sales contact.
 
 > To extend this list, add a row with the vendor's **official** documentation domain. Do not
 > add unofficial mirrors, blog posts, or aggregator pages.

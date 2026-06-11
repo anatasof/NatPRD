@@ -86,21 +86,38 @@ but violations in them block the PRD from being marked `Approved`.
 
 `scripts/validate.py` enforces the *structural* subset of this rubric. The scoring total is
 unchanged at **100** — the checks below enforce existing rubric items; they do not add points.
+Every section also keeps semantic checks that only the model can make (listed in the last
+column); the script's JSON is the baseline, never the final verdict.
 
-| Section | Deterministic check | Notes |
+**Placeholder handling:** unfilled template placeholders (`[Name]`, `[Value]`,
+`[Name], [Name]`, `YYYY-MM-DD`) count as empty. **[TBD] handling:** a `[TBD …]` field takes
+the same deduction as a missing field but is reported as a **warning**, not a violation
+(per SKILL.md). Exception: status gates — a PRD marked `Approved` with a `[TBD]` approver or
+approval date is still a **violation**, because the status asserts those fields are resolved.
+
+| Section | Deterministic checks (deduction) | Left to the model |
 |---|---|---|
-| §1, §2, §6, §7, §8, §11 | As before | — |
-| §8 MoSCoW | Missing MoSCoW is a **violation** (−1) | Now matches `section-rules.md` §8 (was previously emitted as a warning) |
-| §10 Metric Monitoring | DRI / dashboard / primary alert threshold / rollback trigger / ≥1 review date present (−1 each) | Named-vs-team DRI stays a semantic check for the model |
-| §12 FAQ | ≥1 entry and open items have owners → 5; present but missing → 3 | Zero entries warns; absent scores 0 |
-| §3, §4, §5, §9 | None (semantic-only) | Full marks; model layers checks on top |
+| §1 Name | Present, not a placeholder (→0); ≤8 words (→1); verb-start warning | Jira/Confluence name match |
+| §2 Status | Valid status vocabulary (−1); Reviewers filled (−2); Approvers (−2) and Approval Date (−1) when Approved+; Version / Author / Owner warnings (−1 each) | Individuals vs. team names |
+| §3 Background | Evidence & Data subsection has content (−3); Cost of Inaction has content (−2) | Pain-led ordering, paragraph length, Regulatory Context requirement (needs intake state) |
+| §4 Objective | ≥1 KR with content (−6 if none); each KR has baseline + target (−2 per KR); non-numeric baseline/target warning; OKR alignment has content (−2) | Outcome vs. feature phrasing, single-objective rule |
+| §5 Scope | Out of Scope present (−3) with content (−3); Out items have reasons (−2); Platform + Segment stated (−2) | Regulatory-driven scope items (needs intake state) |
+| §6 Hypothesis | Filled (non-template) "We believe…" sentence (−3); Falsification condition with content (−3); confidence keyword (−1 warning) | Actual falsifiability, rationale quality |
+| §7 Metrics | Placeholder-only rows ignored; leading (−3), lagging (−3), guardrail row (−2) present; baseline (−1) and target/threshold (−1) per real row | Vanity-metric pairing, owner is individual |
+| §8 Requirements | Splits stories on `###`/`####` `US-…` headings; user-story format (→0 if none); specific role (−2); ≥2 Gherkin scenarios (−3); MoSCoW priority (−1, violation per `section-rules.md`); NFR verification method (−2) | Story sizing, deterministic Then clauses |
+| §9 Solution | ≥1 real design link (−3); coverage map non-empty (−2); ≥1 alternative with content (−2) and each with a rejection reason (−1) | Coverage map spans every §8 story |
+| §10 Monitoring | Dashboard/tool, DRI, primary alert threshold, rollback trigger, ≥1 review date (−1 each) | Named-vs-team DRI, observable rollback trigger |
+| §11 Tracking | noun_verb naming per real event (−2); sign-off block present (−2); zero-content warning | Event ↔ §7 metric mapping, trigger specificity |
+| §12 FAQ | ≥1 real entry and open items have owners → 5; present but lacking → 3; absent → 0 | Resolution plans at Approved |
 
 **Cross-cutting checks** (emitted under a `cross_checks` object, not added to the section score):
 
 - **Citations** (`citation_warnings`): every inline `[source: …]` should carry a `retrieved:` date,
   and a `References / Sources` section should exist. Reported as warnings.
-- **Compliance** (`compliance_violations`): when §13 contains a regulatory-risk table, each row must
-  name a specific regulation (not generic "regulatory risk") and a named owner. Reported as
-  violations — these block `Approved` but do not change the score (§13 is optional/unscored). The
-  validator only checks §13 when present; it cannot know the intake state, so the model still
-  enforces "compliance signals confirmed → Regulatory Context required".
+- **Compliance** (`compliance_violations`, `compliance_warnings`): when §13 contains a
+  regulatory-risk table, each filled row must name a specific regulation (not generic
+  "regulatory risk") and a named owner — violations that block `Approved` without changing the
+  score (§13 is optional/unscored). A `[TBD]` owner is a warning that asks for an assignment
+  deadline. Untouched template rows are skipped. The validator only checks §13 when present; it
+  cannot know the intake state, so the model still enforces "compliance signals confirmed →
+  Regulatory Context required".

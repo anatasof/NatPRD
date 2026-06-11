@@ -1,0 +1,9 @@
+# OS cruft
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# Local Claude Code state
+.claude/

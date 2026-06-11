@@ -150,12 +150,17 @@ Now just say what you need — Claude handles the rest.
 
 ### Option 2 — Claude app (web, desktop, mobile)
 
-The Claude app can't install skills directly, so you load the instructions manually — a one-time copy-paste:
+The Claude app can't install skills directly, so you load the files manually — a one-time setup. `SKILL.md` is only the conductor: the actual interview questions, section rules, scoring rubric, and templates live in separate files, so those need to come along too.
 
-- **Best for repeated use:** create a **Project** in the Claude app → **Edit project instructions** → paste in the entire contents of the `SKILL.md` file from this repo → Save. Every chat in that project now follows the PRD workflow.
-- **Quick alternative:** click your profile → **Customize Claude** → paste `SKILL.md` into the instructions box → Save.
+1. Create a **Project** in the Claude app → **Edit project instructions** → paste in the entire contents of `SKILL.md` → Save.
+2. In the same Project, use **Add content / Project knowledge** to upload these six files from the repo:
+   - `prompts/interview-questions.md`, `prompts/section-rules.md`, `prompts/validation-rules.md`
+   - `templates/prd-template.md`, `templates/prd-summary-template.md`
+   - `references/api-docs.md` *(optional — only useful if your PRDs name third-party vendors)*
 
-> **One difference:** the Claude app can't save files to your computer. It will write the full PRD in the chat, and you copy it out and save it yourself as `docs/prd.md`.
+Every chat in that project now follows the full PRD workflow.
+
+> **Two differences from Claude Code:** the app can't save files to your computer — it writes the full PRD in the chat and you copy it out yourself as `docs/prd.md` — and it can't run the helper scripts (`validate.py`, `lookup_regulation.py`). Scoring still works (the rubric is in the uploaded files), and regulation lookup falls back to the built-in table in `interview-questions.md`.
 
 ---
 
@@ -437,7 +442,7 @@ New to product-doc jargon? Here's what the terms mean.
 No. You answer plain questions in a chat. The technical files run behind the scenes (and only in Claude Code).
 
 **Does it work in the regular Claude app, not just Claude Code?**
-Yes — paste `SKILL.md` into a Project's instructions or into "Customize Claude." The only difference is the app can't save files for you, so you copy the finished PRD out of the chat.
+Yes — paste `SKILL.md` into a Project's instructions and upload the `prompts/` and `templates/` files as project knowledge (see [Installation](#installation), Option 2). The app can't save files for you, so you copy the finished PRD out of the chat, and the helper scripts don't run there — the built-in fallbacks cover both.
 
 **Why does it ask so many questions before it starts writing?**
 So it never has to guess. A few minutes of context up front is what lets it avoid invented metrics, fake design links, and made-up evidence later.

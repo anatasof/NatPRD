@@ -1,7 +1,7 @@
 ---
 name: natprd
 description: Activate this skill when the user wants to create, update, validate, or review a Product Requirement Document. Triggers on mentions of PRD, product requirements, user stories, acceptance criteria, or initiative documentation, or when the user describes a feature and asks for structured documentation.
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch, AskUserQuestion
 ---
 
 # PRD Maker
@@ -216,6 +216,8 @@ Use the `vX.Y` format. Read the existing `Version` field from the PRD file befor
 Default output: `docs/prd.md`.
 
 If the user specified an explicit file path in their request (e.g., "save it to `prds/2026-Q2-auth.md`"), honor that path instead. The same rule applies to Mode 2 (read path) and Mode 3 (update path): if the user names a file, use it; otherwise default to `docs/prd.md`.
+
+When the user requests a one-page stakeholder summary, write it to `docs/prd-summary.md` (or alongside the PRD if it lives at a custom path: same directory, `-summary` suffix).
 
 ---
 

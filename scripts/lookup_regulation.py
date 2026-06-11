@@ -27,19 +27,38 @@ from typing import Any, Dict, List
 
 DEFAULT_REGISTRY = Path(__file__).resolve().parent.parent / "references" / "regulations.json"
 
+# EU + EEA member country codes. A request for any of these matches registry
+# entries whose geography is the umbrella code "EU" (GDPR, PSD2, …).
+# GB is deliberately absent (post-Brexit) — UK rules are separate entries.
+EU_EEA_MEMBERS = {
+    "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
+    "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
+    "SI", "ES", "SE",  # EU
+    "IS", "LI", "NO",  # EEA
+}
+
+COUNTRY_ALIASES = {"UK": "GB"}
+
 
 def country_of(code: str) -> str:
-    """Country part of a geography code: 'US-CA' -> 'US', 'ID' -> 'ID'."""
-    return code.strip().upper().split("-", 1)[0]
+    """Country part of a geography code: 'US-CA' -> 'US', 'ID' -> 'ID', 'UK' -> 'GB'."""
+    country = code.strip().upper().split("-", 1)[0]
+    return COUNTRY_ALIASES.get(country, country)
 
 
 def geo_matches(requested: str, geographies: List[str]) -> bool:
-    """A regulation matches if it is GLOBAL or shares a country with the request."""
-    geos = [g.strip().upper() for g in geographies]
-    if "GLOBAL" in geos:
-        return True
+    """A regulation matches if it is GLOBAL, shares a country with the request,
+    or carries the umbrella code EU and the request is an EU/EEA member."""
     req_country = country_of(requested)
-    return any(country_of(g) == req_country for g in geos)
+    for g in geographies:
+        geo_country = country_of(g)
+        if geo_country == "GLOBAL":
+            return True
+        if geo_country == req_country:
+            return True
+        if geo_country == "EU" and req_country in EU_EEA_MEMBERS:
+            return True
+    return False
 
 
 def lookup(

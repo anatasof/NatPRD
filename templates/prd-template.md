@@ -6,6 +6,8 @@
 
 ## How to Use This Template
 
+> Delete this entire "How to Use This Template" section (and the template footer line) in the final document — they are instructions for the writer, not content for reviewers.
+
 - Fill in every **Core Section**. Do not skip or leave placeholders.
 - Add **Optional Sections** only when the trigger condition is met.
 - All requirements are written as **user stories**. All acceptance criteria are written in **Gherkin syntax**.

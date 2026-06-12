@@ -30,13 +30,13 @@ on demand when you need the full text — do not duplicate them here.
 
 ## How to Activate
 
-In Claude Code, simply say:
+Simply say:
 - `"I want a PRD for [feature/initiative name]"`
 - `"Help me write a PRD"`
 - `"Create a PRD for [description]"`
 - `"Review my PRD"` — to validate an existing PRD file
 
-Claude will detect the intent and load this skill automatically.
+Claude will detect the intent and load this skill automatically. In Claude Code it can also be invoked directly with `/natprd`.
 
 ---
 
@@ -110,7 +110,7 @@ The skill enriches PRDs with verifiable facts from sources **the user explicitly
 |---|---|---|
 | Local file path | `docs/research-2026-q1.md`, prior PRD, exported CSV, post-mortem | `Read` tool directly |
 | Public URL | News article, regulatory body page, public research, vendor docs, public blog post | `WebFetch` tool |
-| Auth-walled URL | Confluence, Jira, internal wiki, private Notion, Figma | Ask user to paste the relevant excerpt — Claude Code cannot authenticate |
+| Auth-walled URL | Confluence, Jira, internal wiki, private Notion, Figma | Ask user to paste the relevant excerpt — Claude cannot authenticate |
 
 The skill NEVER goes searching for sources on its own (no `WebSearch`). If the user did not name a source, it does not exist for PRD purposes — write `[TBD — needs source]` instead.
 
@@ -262,6 +262,7 @@ Step 5 — Output
   Assemble and write the complete PRD to the output path (see "Output Path" above).
   Run validation: invoke `python3 scripts/validate.py <path>` for the deterministic baseline,
   then layer the semantic checks from prompts/validation-rules.md on top.
+  If python3 or the script is unavailable, skip it and score from prompts/validation-rules.md alone.
   Report validation score and any warnings.
   Offer a summary of what was generated.
 ```
@@ -273,6 +274,7 @@ Used when the user says "review my PRD" or provides an existing PRD file.
 Step 1 — Read the existing PRD file (path from user, or default docs/prd.md).
 Step 2 — Run validation: invoke `python3 scripts/validate.py <path>` first,
   then add semantic checks from prompts/validation-rules.md.
+  If python3 or the script is unavailable, score from prompts/validation-rules.md alone.
 Step 3 — Report: score, issues found, sections that need work.
 Step 4 — Offer to fix specific sections interactively.
   After each fix is written to the file: apply Version and Date Auto-Update Rules

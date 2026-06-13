@@ -121,3 +121,12 @@ approval date is still a **violation**, because the status asserts those fields 
   deadline. Untouched template rows are skipped. The validator only checks §13 when present; it
   cannot know the intake state, so the model still enforces "compliance signals confirmed →
   Regulatory Context required".
+- **Diagrams** (`diagram_warnings`): Mermaid diagrams are an advisory enhancement and **never
+  change the 100-point score**. Deterministic part — each ` ```mermaid ` block must close, start
+  with a recognized header (`flowchart`/`graph`/`sequenceDiagram` — the two supported types plus
+  the `graph` alias), have a non-empty body, and carry no leftover placeholder tokens (`[Name]`,
+  `[action]`, `TBD`, etc.). Each failure is a warning. Semantic part (model-only, not in the
+  script): the diagram must match the confirmed content of the section it sits in and introduce no
+  unsourced step, branch, actor, or destination — the derive-from-confirmed-content rule in
+  `prompts/diagram-rules.md`. A diagram that asserts something the prose does not is a violation of
+  that rule even when the syntax is clean.

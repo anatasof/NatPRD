@@ -65,6 +65,20 @@ SOURCE_PATTERN = re.compile(r"\[source:\s*([^\]]+)\]", re.IGNORECASE)
 REFERENCES_HEADING = re.compile(r"^#{1,4}\s+(references|sources)\b", re.IGNORECASE | re.MULTILINE)
 GENERIC_ROLES = {"user", "a user", "the user", "users", "customer", "customers", "client"}
 
+# Anchored to line start so inline-code mentions of ```mermaid in prose (e.g. the template's
+# own guidance notes) are not mistaken for a real fenced block.
+MERMAID_BLOCK = re.compile(r"^```mermaid[ \t]*\r?\n(.*?)^```[ \t]*$", re.DOTALL | re.MULTILINE)
+MERMAID_OPEN = re.compile(r"^```mermaid[ \t]*$", re.MULTILINE)
+# Two supported types (flowchart, sequenceDiagram) plus the `graph` alias of flowchart.
+VALID_DIAGRAM_HEADERS = ("flowchart", "graph", "sequencediagram")
+# Narrow: matches leftover skeleton tokens only — NOT legitimate Mermaid node labels like
+# `[Member confirms cancellation]`, and NOT the sanctioned `[TBD]` label (diagram-rules.md).
+DIAGRAM_PLACEHOLDER = re.compile(
+    r"\[(?:name|value|action|role|benefit|metric|component|screen|title|step|node|actor|"
+    r"system|event[ _]?name|happy[ _]?path|edge[ _]?case)\]",
+    re.IGNORECASE,
+)
+
 
 def split_sections(content: str) -> Dict[str, str]:
     """Split the PRD by top-level numbered H2 headings."""
@@ -704,6 +718,39 @@ def check_compliance(sections: Dict[str, str]) -> Tuple[List[str], List[str]]:
     return violations, warnings
 
 
+def check_diagrams(content: str) -> List[str]:
+    """Cross-cutting (not scored): Mermaid diagrams are an advisory enhancement and
+    never change the score. Each ```mermaid block must close, start with a supported
+    header (flowchart / graph / sequenceDiagram), have a non-empty body with at least
+    one node or message, and carry no leftover skeleton placeholders. A `[TBD]` node
+    label is allowed (per prompts/diagram-rules.md) and is not flagged here."""
+    warnings: List[str] = []
+    blocks = MERMAID_BLOCK.findall(content)
+    if len(MERMAID_OPEN.findall(content)) > len(blocks):
+        warnings.append("§diagrams: a ```mermaid block is not closed with a matching ```")
+    for idx, body in enumerate(blocks, start=1):
+        lines = [ln.strip() for ln in body.splitlines() if ln.strip()]
+        if not lines:
+            warnings.append(f"§diagrams: mermaid block {idx} is empty")
+            continue
+        if not lines[0].lower().startswith(VALID_DIAGRAM_HEADERS):
+            warnings.append(
+                f"§diagrams: mermaid block {idx} has an unrecognized type "
+                f"'{lines[0].split()[0]}' — use flowchart or sequenceDiagram"
+            )
+        if len(lines) < 2:
+            warnings.append(
+                f"§diagrams: mermaid block {idx} has a header but no nodes or messages"
+            )
+        placeholder = DIAGRAM_PLACEHOLDER.search(body)
+        if placeholder:
+            warnings.append(
+                f"§diagrams: mermaid block {idx} contains an unfilled placeholder "
+                f"'{placeholder.group(0)}'"
+            )
+    return warnings
+
+
 CHECKERS = {
     "§1": check_section_1,
     "§2": check_section_2,
@@ -763,13 +810,16 @@ def validate(path: Path) -> Dict[str, Any]:
     # Cross-cutting checks (not scored — advisory, or approval-blocking for compliance).
     citation_warnings = check_citations(content)
     compliance_violations, compliance_warnings = check_compliance(sections)
+    diagram_warnings = check_diagrams(content)
     results["warnings"].extend(citation_warnings)
     results["warnings"].extend(compliance_warnings)
+    results["warnings"].extend(diagram_warnings)
     results["violations"].extend(compliance_violations)
     results["cross_checks"] = {
         "citation_warnings": citation_warnings,
         "compliance_violations": compliance_violations,
         "compliance_warnings": compliance_warnings,
+        "diagram_warnings": diagram_warnings,
     }
     results["score"] = total
     results["max_score"] = sum(SECTION_MAX.values())

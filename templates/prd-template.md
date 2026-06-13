@@ -229,6 +229,10 @@ Scenario: [Edge case or failure]
 **Dependencies:** [None / US-XXX / External system]
 **Notes:** [Constraints, open questions]
 
+*(Optional — a ` ```mermaid ` flowchart of this story's flow may go here, built only from the
+confirmed Gherkin scenarios above. See `prompts/diagram-rules.md`. Omit when the flow is a single
+straight line.)*
+
 ---
 
 #### US-002 — [Title]
@@ -275,6 +279,11 @@ Scenario: [Edge case or failure]
 
 ### Proposed Approach
 [Product-level description. Reference designs — do not describe UI in prose.]
+
+*(Optional — a ` ```mermaid ` flowchart of the user flow, or a `sequenceDiagram` of how the named
+systems interact, may go here. Build it only from the approach confirmed above; every node and
+actor must trace to confirmed content. See `prompts/diagram-rules.md`. A diagram does not replace
+a design link.)*
 
 ### Design Artifacts
 
@@ -347,6 +356,10 @@ Scenario: [Edge case or failure]
 **Data Team Sign-off:**
 - [ ] Pending
 - [ ] Approved — [Name], [Date]
+
+*(Optional — a ` ```mermaid ` `sequenceDiagram` of an event's path, from the actor through
+client/server to its destination, may go here. Build it only from the confirmed event row above —
+no actor, hop, or destination the row does not contain. See `prompts/diagram-rules.md`.)*
 
 ### Rules
 - noun_verb naming, no exceptions.

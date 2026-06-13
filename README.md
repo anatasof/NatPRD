@@ -16,6 +16,7 @@ You talk, it asks smart questions, and a complete, well-structured document come
 - [Installation](#installation)
 - [How to use it](#how-to-use-it)
 - [What's inside a PRD](#whats-inside-a-prd)
+- [Diagrams](#diagrams)
 - [Smart research features](#smart-research-features)
 - [The honesty guarantee](#the-honesty-guarantee)
 - [Quality score](#quality-score)
@@ -225,6 +226,35 @@ Every PRD has **12 core sections** (always included) and up to **4 optional sect
 
 ---
 
+## Diagrams
+
+A wall of text is hard to picture. At a few natural points the skill can add a small **diagram**
+right next to the part it illustrates, so reviewers can see a flow at a glance. Two kinds are
+supported:
+
+- A **flowchart** of a user flow (in the Requirements and Solution sections), built from the
+  pass/fail scenarios you already described.
+- A **sequence diagram** of how an event travels (in the Solution and Tracking sections), built
+  from the event you already mapped (who triggers it, whether it is client or server side, and
+  where it lands).
+
+Three things matter about how this works:
+
+1. **It asks first.** The skill offers a diagram, shows you the diagram text, and adds it only
+   after you say yes. Nothing is drawn behind your back.
+2. **It only draws what you confirmed.** A diagram is a picture of facts already in the PRD, never
+   a source of new ones. It will not invent a step, a branch, or a system you did not mention; if
+   something is unknown it labels it `[TBD]`, the same as everywhere else.
+3. **It is just text.** Diagrams are written in **Mermaid**, a plain-text format that renders as a
+   real picture on GitHub and in most Markdown viewers. There is nothing to install, and the
+   diagram stays readable even where it is not rendered.
+
+Diagrams are an optional extra. They do not change your [quality score](#quality-score); the
+checker only flags a diagram that is malformed (for example, an unfinished placeholder), as a
+gentle warning.
+
+---
+
 ## Smart research features
 
 PRD Maker can pull in real, verifiable facts, but only from sources **you point it to** or from a small built-in list of official references. It **never goes searching the web on its own**, because that's how AI tools end up citing things that don't exist.
@@ -319,7 +349,8 @@ natprd/
 ├── prompts/
 │   ├── interview-questions.md    ← The questions asked for each section
 │   ├── section-rules.md          ← The pass/fail rules for each section
-│   └── validation-rules.md       ← How the 0 to 100 score is calculated
+│   ├── validation-rules.md       ← How the 0 to 100 score is calculated
+│   └── diagram-rules.md          ← How Mermaid diagrams are proposed and drawn
 ├── references/
 │   ├── regulations.json          ← The dated regulation list (rules → official URLs)
 │   └── api-docs.md               ← Official documentation links for common vendors

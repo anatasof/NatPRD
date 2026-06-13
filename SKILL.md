@@ -53,6 +53,7 @@ Examples that MUST use buttons:
 - §7 Metric type (Leading / Lagging / Guardrail)
 - Any yes/no compliance flag in §0.3
 - "Any more user stories?" (Yes — add another / No — move on)
+- A diagram offer at §8, §9, or §11 (Yes, add it / No, skip)
 
 Exceptions — keep as plain text:
 - **Open-ended questions** (the working name in §0.1, evidence narrative in §3, hypothesis prose in §6, baseline/target values in §7): no discrete option set.
@@ -182,6 +183,31 @@ If the source contains nothing useful for the current section, that is the resul
 
 ---
 
+## Diagrams (Mermaid)
+
+The skill can add **Mermaid diagrams** inline in the PRD — a flowchart of a user flow, or a
+sequence diagram of an event's path — placed next to the prose or table it depicts. Two types
+only: `flowchart` and `sequenceDiagram`. No new tool is needed (`allowed-tools` is unchanged);
+Mermaid is plain text written into the markdown.
+
+Two rules govern every diagram, and both are non-negotiable:
+
+- **Derive from confirmed content only.** A diagram is a re-rendering of what the user already
+  confirmed in that section — never a source of new facts. Every node, edge, actor, and message
+  must trace to something the user said. No invented steps, branches, systems, or actors. This is
+  the Anti-Hallucination contract applied to diagrams. If a step is unknown, label it `[TBD]`; do
+  not fabricate it.
+- **Propose, then confirm.** Diagrams are never auto-written. Offer one at the natural point
+  (§8, §9, §11), draft it from confirmed content, show the raw ` ```mermaid ` block plus a
+  one-line description of what it depicts, and write it only after the user approves — the same
+  verify-before-write mechanic used for sourced facts.
+
+Full type list, Mermaid conventions, and worked examples are in `prompts/diagram-rules.md`. Load
+that file whenever a diagram is offered or requested. Diagrams are an advisory enhancement: they
+do not change the 100-point validation score.
+
+---
+
 ## Version and Date Auto-Update Rules
 
 These rules apply automatically whenever Claude writes or saves the PRD file. No manual entry is needed.
@@ -244,11 +270,15 @@ Step 2 — Guided Interview
   Ask focused questions per section (see prompts/interview-questions.md).
   Validate each answer against section rules before proceeding.
   Show the completed section output before moving to the next.
+  At §9 and §11, after the content is confirmed, offer a Mermaid diagram per
+  prompts/diagram-rules.md (propose → show source → write only on approval).
 
 Step 3 — Requirements Deep Dive
   For §8, collect all user stories one at a time.
   For each story: role → action → benefit → scenarios.
   Ask "Any more stories?" after each one until the user signals done.
+  After a story's scenarios are confirmed, you may offer a flowchart of that
+  story's flow per prompts/diagram-rules.md — derived from the Gherkin only.
 
 Step 4 — Optional Sections
   Optional sections were determined at intake. Present the confirmed list to the user:
@@ -288,6 +318,8 @@ Used when the user wants to revise a specific section of an existing PRD.
 Step 1 — Identify the target section and the PRD file path.
 Step 2 — Show the current content of that section.
 Step 3 — Ask focused questions to gather new/updated content.
+  "Add a flow/sequence diagram to §N" is a supported update — draft it from the section's
+  confirmed content per prompts/diagram-rules.md, show the source, write only on approval.
 Step 4 — Rewrite the section and update the file. Apply Version and Date Auto-Update Rules
   before saving (content-edit rule, or status-change rule if the Status field was modified).
 Step 5 — Re-run validation on the updated section.
@@ -303,6 +335,7 @@ Step 5 — Re-run validation on the updated section.
 | `prompts/interview-questions.md` | Questions to ask per section during generation | Mode 1 (each section), Mode 3 |
 | `prompts/section-rules.md` | Full rules for every section — used for validation | Modes 1, 2, 3 when validating |
 | `prompts/validation-rules.md` | Scoring rubric and validation report format | Modes 1, 2 (after writing/reading PRD) |
+| `prompts/diagram-rules.md` | Mermaid diagram spec (types, rules, examples) | When a diagram is offered (§8/§9/§11) or requested |
 | `templates/prd-template.md` | The blank PRD template | Mode 1 when assembling final output |
 | `templates/prd-summary-template.md` | One-page stakeholder summary template | When user requests a summary |
 | `scripts/validate.py` | Deterministic baseline validator (run via Bash) | Modes 1, 2 — before producing report |

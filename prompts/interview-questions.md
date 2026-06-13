@@ -345,6 +345,13 @@ Then ask: "Any more stories? Before you say no — have we also covered any onbo
 
 Continue until the user explicitly says "no more stories" after the gap-check prompt.
 
+**Diagram offer (optional).** Once a story's Gherkin scenarios are confirmed, you may offer a
+flowchart of that story's flow: "Want me to add a flowchart of this flow to the story?"
+(Yes, add it / No, skip). If yes, follow `prompts/diagram-rules.md`: build the flow from the
+confirmed happy + edge scenarios only, show the ` ```mermaid ` source plus a one-line
+description, and write it only after the user approves. Do not invent branches the scenarios do
+not contain. Skip the offer when the story is a single straight-line scenario with no branch.
+
 **Non-Functional Requirements:**
 9. Are there performance requirements? (e.g., response time, throughput)
 10. Are there security or compliance requirements? (e.g., encryption, OJK, regulatory)
@@ -378,6 +385,17 @@ Continue until the user explicitly says "no more stories" after the gap-check pr
 
 6. Does this solution create any new backend services, data models, or API contracts that don't currently exist?
    - _If yes:_ "These are likely dependencies for other teams. I'll flag them for §14 (Dependencies)." If §14 is not already triggered, recommend adding it.
+
+**Diagram offer (optional).** After the proposed approach is confirmed, you may offer a diagram
+per `prompts/diagram-rules.md`:
+- A **flowchart** of the user flow: "Want me to add a flowchart of this user flow to §9?"
+- A **sequence diagram** when the approach spans multiple systems or APIs the user named:
+  "Want me to add a sequence diagram of how these systems interact?"
+(Yes, add it / No, skip). Build it only from the approach the user described — every node, actor,
+and system must trace to confirmed content. Show the ` ```mermaid ` source plus a one-line
+description, and write only after approval. If no link or design exists yet, a diagram does not
+substitute for the `[No design link — status: Draft]` marker — it depicts the confirmed flow, it
+does not assert a design decision.
 
 ---
 
@@ -423,6 +441,14 @@ After all events, run this closing cross-check:
 Then ask: "Has the data or analytics team reviewed this tracking plan?"
 - _If no or not yet:_ Mark the sign-off checkbox as: `[ ] Data team sign-off — PENDING`.
 - RULE: Never pre-populate the sign-off checkbox as complete unless the user explicitly confirms it.
+
+**Diagram offer (optional).** Once events are captured and the coverage cross-check passes, you
+may offer a sequence diagram of an event's path: "Want me to add a sequence diagram showing how
+`[event_name]` flows from the user to its destination?" (Yes, add it / No, skip). Per
+`prompts/diagram-rules.md`, build it only from the confirmed event row — actor, client/server
+side, and destination must all come from what the user gave. Do not add a server hop or
+destination the row does not contain. Show the ` ```mermaid ` source plus a one-line description,
+and write only after approval.
 
 ---
 
